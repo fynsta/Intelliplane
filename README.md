@@ -14,6 +14,14 @@ stage changes, commit
 
 git push
 
+#### shortcut:
+
+git pull origin master
+
+stage changes, commit
+
+git push
+
 ### To update master
 git pull --all (oder git checkout Fynn, git pull, git checkout master, git pull)
 
@@ -25,5 +33,14 @@ stage changes, commit
 
 git push
 
+#### shortcut:
+
+git pull origin Fynn
+
+stage changes, commit
+
+git push
+
 ## Interfaces
 1. JSON [{"p":0.123,"h":-3.4}]
+2. python method

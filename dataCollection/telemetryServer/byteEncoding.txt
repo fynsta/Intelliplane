@@ -1,0 +1,4 @@
+start byte:= 11111111=255
+beginning of data package:= 255 0
+end of data package:= 255 1
+byte occuring in data:= 255 2
