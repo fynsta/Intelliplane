@@ -7,7 +7,6 @@ def f(x: tf.Variable) -> tf.Variable:
 
 with tf.GradientTape(persistent=False) as tape:
     trainable = tf.Variable(3.)
-    y=trainable*trainable
+    y = trainable*trainable
     x1 = f(trainable)
 print(tape.gradient(x1, trainable))
-print(fertig)
