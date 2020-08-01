@@ -10,4 +10,5 @@ with tf.GradientTape(persistent=False) as tape:
     y=trainable*trainable
     x1 = f(trainable)
 print(tape.gradient(x1, trainable))
+print(fertig)
 #print(tape.gradient(y,trainable))
