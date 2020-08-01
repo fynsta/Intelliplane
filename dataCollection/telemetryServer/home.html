@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Telemetry</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src='https://peteole.github.io/touchmove/touchmove.js'></script>
+    <script src='Network.js'></script>
+    <script src='Instruments.js'></script>
+    <script src='Map.js'></script>
+    <script src='Grid.js'></script>
+    <script src="time.js"></script>
+    <script src='main.js'></script>
+</head>
+
+<body>
+    <header id="layoutControler">
+        <p id="layoutButtons">
+            <button onclick="deleteColumn()">delete column</button>
+            <button onclick="addColumn()">add column</button>
+            <output id="resizer" onclick="resizeGridInitiator()">resize grid</output>
+            <output id="mover" onclick="makeMoversVisible()"> move items </output>
+        </p>
+    </header>
+    <div id="grid">
+        <div class="default" id="settings">
+            <h1>server settings</h1>
+            <hr>
+            <p>
+                flight data server url:<input type="url" id="wssInput" value="localhost:8081"
+                    name="insert wss server url">
+                <output onclick="connect()" id="connector">connect to server</output>
+                <output id="connectionIndicator" onclick="webSocket.close()"></output>
+            </p>
+            <hr>
+            <p>
+                devices connected to server: <br>
+                <button onclick="refresh()">refresh devices</button>
+                <select id="deviceSelector" onchange="setDevice()">
+                </select>
+            </p>
+            <button onclick="downloadData()">download current log</button>
+            <hr class="big">
+            <h1>plane settings</h1>
+            <hr>
+            <p>
+                light <br>
+                0 <input id="landingLightSlider" type="range" class="slider" name="light" min="0" max="255" value="0">
+                100
+            </p>
+            <hr>
+            <p>
+                position light<input type="checkbox">
+            </p>
+            <hr class="big">
+            <h1>graphics settings</h1>
+            <hr>
+            <p>
+                framerate <br>
+                0.5 <input type="range" class="slider" id="framerateSetter" onchange="updateFramerate()" min="0.5"
+                    max="60" value="5"> 60
+            </p>
+        </div>
+        <div class="default" id="pfd">
+            <canvas class="instrument" id="speedDisplay"></canvas>
+            <canvas class="instrument" id="artificialHorizon"></canvas>
+            <canvas class="instrument" id="altitudeDisplay"></canvas>
+            <canvas class="instrument" id="compass"></canvas>
+        </div>
+        <div class="default" id="map">
+        </div>
+        <div class="default" id="flightData"></div>
+        <div class="default" id="grapher"></div>
+        <div class="default" id="console">
+            <div id="consoleOutput"></div>
+            <p><input type="text" value="command..." id="commandInput"></p>
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>

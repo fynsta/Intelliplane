@@ -1,0 +1,18 @@
+general head protocoll:
+{headnumber;[sensor numbers]}
+
+
+head 1:
+pitch bank
+
+head 2:
+pitch bank heading altitude speed
+
+head 3:
+GPSTime, GPSLAt, GPSLong
+
+head 4:
+message
+
+head 5:
+numOfChannels, channel values[]
