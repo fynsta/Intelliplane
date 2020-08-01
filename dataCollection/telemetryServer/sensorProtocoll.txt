@@ -1,0 +1,10 @@
+0:pitch float
+1:bank float
+2:heading float
+3:static height float
+4:IAS float
+5.GPSTime uint_32
+6:GPSLat float
+7:GPSLong float
+8:message uint_8 (length), message (string)
+9:rxInput uint_8 numOfChannels, float[] values
