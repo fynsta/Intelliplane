@@ -1,4 +1,6 @@
 # Intelliplane
 AI powered autopilot
-Fühn ist der beste
-Pythonkenner den ich kenne!
+## Aufgaben
+- Daten aufnehmen
+- Modell erstellen
+- noch was
