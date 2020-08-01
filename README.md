@@ -2,13 +2,13 @@
 AI powered autopilot 
 
 ## Important Git stuff
-Auf eurer Branch: 
+git checkout master 
 
-git commit + push
+git pull
 
-git fetch origin        # gets you up to date with origin
+git checkout Fynn      # gets you "on branch Fynn"
 
-git merge origin/master
+git merge master   # here solve merge conflicts
 
 ## Interfaces
 1. JSON [{"p":0.123,"h":-3.4}]
