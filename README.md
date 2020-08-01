@@ -5,3 +5,5 @@ AI powered autopilot
 2. Modell erstellen
 3. Autopilot mit 2. trainieren
 4. Autopilot auf FLugzeug schieben
+## Interfaces
+1. JSON [{"p":0.123,"h":-3.4}]
