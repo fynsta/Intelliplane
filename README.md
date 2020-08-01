@@ -5,3 +5,5 @@ AI powered autopilot
 2. Modell erstellen
 3. Autopilot mit 2. trainieren
 4. Autopilot auf Flugzeug laden
+### honorable mentions
+1. Simons gute Laune
