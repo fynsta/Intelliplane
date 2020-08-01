@@ -1,3 +1,3 @@
 # Intelliplane
 AI powered autopilot
-Fynn ist der beste
+Fühn ist der beste
