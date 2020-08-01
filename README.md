@@ -4,7 +4,7 @@ AI powered autopilot
 ## Important Git stuff
 
 ### To get master
-git pull --all
+git pull --all (oder git checkout master, git pull, git checkout Fynn, git pull)
 
 git checkout Fynn      # gets you on branch Fynn
 
@@ -15,7 +15,7 @@ stage changes, commit
 git push
 
 ### To update master
-git pull --all
+git pull --all (oder git checkout Fynn, git pull, git checkout master, git pull)
 
 git checkout master      # gets you on branch master
 
