@@ -1,5 +1,5 @@
 # Intelliplane
-AI powered autopilot 
+AI powered autopilot
 
 sdoufhagskducg<k>
 ## Interfaces
