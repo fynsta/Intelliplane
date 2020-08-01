@@ -4,3 +4,4 @@ AI powered autopilot
 - Daten aufnehmen
 - Modell erstellen
 - Kekse essen
+- mehr Kekse essen
