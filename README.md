@@ -1,5 +1,5 @@
 # Intelliplane
-AI powered autopilot
+AI powered autopilot 
 
 ## Important Git stuff
 git checkout Fynn      # gets you "on branch Fynn"
