@@ -2,7 +2,9 @@
 AI powered autopilot 
 
 ## Important Git stuff
-git checkout Fynn      # gets you "on branch Fynn"
+Auf eurer Branch: 
+
+git commit + push
 
 git fetch origin        # gets you up to date with origin
 
