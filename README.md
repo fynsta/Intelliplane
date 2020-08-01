@@ -7,3 +7,4 @@ AI powered autopilot
 4. Autopilot auf Flugzeug laden
 ### honorable mentions
 1. Simons gute Laune
+2. Schokolade
