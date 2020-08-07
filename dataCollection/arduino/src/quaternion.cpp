@@ -67,7 +67,7 @@ namespace n
     multiply(result, inv, toTurn);
     return toTurn;
   }
-  void rotate(Quaternion &base, Quaternion &rot)
+  void rotate(Quaternion &base, Quaternion rot)
   {
     float angle = vectorLength(rot);
     if (!isnormal(angle) || angle < 1e-8)

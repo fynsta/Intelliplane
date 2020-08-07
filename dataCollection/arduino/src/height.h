@@ -1,7 +1,8 @@
 #include <Arduino.h>
 //#define BMP085_Sensor
 //#define BME280_Sensor
-#define BME280_Sensor_Adafruit
+//#define BME280_Sensor_Adafruit
+#define BMP280_SENSOR
 void readHeight();
 void beginHeight();
 float height = 0;
@@ -74,11 +75,31 @@ void calibrateHeight()
 }
 void readHeight()
 {
-    height = staticPressure.readAltitude(referencePressure);
+    height = staticPressure.readAltitude();
 #ifdef SerialDebugging
     //Serial.println("height: "+String(height));
 #endif
     float p_stau = totalPressure.readPressure() - staticPressure.readPressure() - pressureDifferenceOffset;
     speed = sqrt(abs(p_stau * 2 / rho)) * (p_stau > 0 ? 1 : -1);
+}
+#endif
+
+#ifdef BMP280_SENSOR
+#include "Adafruit_BMP280.h"
+Adafruit_BMP280 bmp(&Wire); // use I2C interface
+bool working = false;
+float calibrationPressure = 1013 * 100;
+void calibrateHeight()
+{
+    calibrationPressure = bmp.readPressure();
+}
+void beginHeight()
+{
+    working = bmp.begin(0x76);
+    calibrateHeight();
+}
+void readHeight()
+{
+    height = bmp.readAltitude();
 }
 #endif
