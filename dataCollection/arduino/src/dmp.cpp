@@ -2,26 +2,16 @@
 #define accelFactor 0.00059877315 // 9.81*2/32767
 //#define SerialDebugging
 #include "dmp.h"
-n::Quaternion currentRotation = {1, 0, 0, 0};
-float pitch = 0;
-float bank = 0;
-float gyroYaw = 0;
-long lastRead = 0;
-FloatVector rot;
-FloatVector rotSpeed;
-FloatVector accel;
-#ifdef mpu6050
-MPU6050 accelgyro;
-//n::Quaternion down;
-void beginDmp()
+#ifdef MPU6050_SENSOR
+void MPU6050DMP::begin()
 {
 	Wire.begin();
 	accelgyro.initialize();
-	lastRead = millis();
+	lastRead = micros();
 	//readAccel();
 	//down={0,accel.x,accel.y,accel.z};
 }
-void readGyro()
+void MPU6050DMP::readGyro()
 {
 	int16_t x;
 	int16_t y;
@@ -38,7 +28,7 @@ void readGyro()
 	rotSpeed.z = gyroFactor * (float)z;
 	// Serial.println("rot" + toString(rot));
 }
-void calibrateGyro()
+void MPU6050DMP::calibrateGyro()
 {
 	accelgyro.setXGyroOffset(-13);
 	accelgyro.setYGyroOffset(-18);
@@ -68,7 +58,7 @@ void calibrateGyro()
   accelgyro.setYGyroOffset(ySum/amount);
   accelgyro.setZGyroOffset(zSum/amount);*/
 }
-void readAccel()
+void MPU6050DMP::readAccel()
 {
 	int16_t x;
 	int16_t y;
@@ -80,16 +70,14 @@ void readAccel()
 	// Serial.println("a" + toString(accel));
 }
 #endif
-#ifdef gy89
-Adafruit_L3GD20_Unified gyro(20);
-sensors_event_t event;
-void beginDmp()
+#ifdef L3GD20
+void L3GD20DMP::begin()
 {
 	gyro.enableAutoRange(true);
 	gyro.begin();
 	lastRead = millis();
 }
-void readGyro()
+void L3GD20DMP::readGyro()
 {
 	gyro.getEvent(&event);
 	long newTime = millis();
@@ -103,7 +91,7 @@ void readGyro()
 	rotSpeed.z = event.gyro.z;
 }
 
-void readAccel()
+void L3GD20DMP::readAccel()
 {
 	gyro.getEvent(&event);
 	accel.x = event.acceleration.x;
@@ -111,50 +99,23 @@ void readAccel()
 	accel.z = event.acceleration.z;
 	// Serial.println("a" + toString(accel));
 }
-void calibrateGyro() {}
 #endif
-#ifdef mpu9250
-MPU9250 mpu(Wire, 0x68);
-float magnetHeading = 0;
-void beginDmp()
+void DMP::processRotations()
 {
-	mpu.begin();
+	n::Quaternion axis = {0, rot.x, rot.y, rot.z};
+	axis = n::turnVector(axis, currentRotation);
+	float angle = n::vectorLength(axis);
+	n::unify(axis);
+	n::makeTurnQuaternion(axis, angle);
+	n::Quaternion tmp;
+	n::multiply(axis, currentRotation, tmp);
+	currentRotation = tmp;
+	n::unify(tmp);
+	rot.x = 0;
+	rot.y = 0;
+	rot.z = 0;
 }
-void readGyro()
-{
-	long newTime = millis();
-	float dt = ((float)(newTime - lastRead)) / 1000.0;
-	lastRead = newTime;
-	mpu.readSensor();
-	rot.y += dt * mpu.getGyroX_rads();
-	rot.x += dt * mpu.getGyroY_rads();
-	rot.z += dt * mpu.getGyroZ_rads();
-	//magnetHeading=atan2(mpu.getMagY_uT(),mpu.getMagX_uT());
-}
-void readAccel()
-{
-	accel.y = mpu.getAccelX_mss();
-	accel.x = mpu.getAccelY_mss();
-	accel.z = -mpu.getAccelZ_mss();
-}
-void calibrateGyro()
-{
-	mpu.calibrateGyro();
-}
-#endif
-void processRotations()
-{
-	readGyro();
-	n::rotateX(currentRotation, rot.x);
-	n::rotateY(currentRotation, rot.y);
-	n::rotateZ(currentRotation, rot.z);
-	// n::Quaternion r{0, rot.x, rot.y, rot.z};
-	// n::rotate(currentRotation, r);
-	n::unify(currentRotation);
-	reset(rot);
-	//n::toPitchBank(currentRotation, pitch, bank, gyroYaw);
-}
-void applyAccel()
+void DMP::processAcceleration()
 {
 	n::Quaternion acceleration{0, accel.x, accel.y, accel.z};
 	n::unify(acceleration);
@@ -162,10 +123,61 @@ void applyAccel()
 		return; // acceleration was zero
 	n::Quaternion currentLot = {0, 0, 0, -1};
 	n::Quaternion measuredLot = n::turnVector(acceleration, currentRotation);
-#ifdef SerialDebugging
-	Serial.print((String)measuredLot.i + "|" + (String)measuredLot.j + "|" + (String)measuredLot.k + "|||");
-	Serial.print((String)acceleration.i + "|" + (String)acceleration.j + "|" + (String)acceleration.k);
-#endif
-	n::rotateAToB(measuredLot, currentLot, currentRotation, 0.5);
+	n::rotateAToB(measuredLot, currentLot, currentRotation, 0.003);
 	n::unify(currentRotation);
+}
+void DMP::processHeadingData(float headingRad,float factor){
+	n::Quaternion measuredHead=n::turnVector({0,1,0,0},currentRotation);
+	n::Quaternion targetHead={0,cos(headingRad),sin(headingRad),0};
+	n::rotateAToB(measuredHead,targetHead,currentRotation,factor);
+}
+#ifdef MPU9250_SENSOR
+void MPU9250DMP::readGyro()
+{
+	long newTime = micros();
+	float dt = ((float)(newTime - lastRead)) / 1000000.0;
+	lastRead = newTime;
+	mpu.readSensor();
+	rot.x += dt * mpu.getGyroX_rads();
+	rot.y += dt * mpu.getGyroY_rads();
+	rot.z += dt * mpu.getGyroZ_rads();
+}
+
+void MPU9250DMP::readAccel()
+{
+	accel.x = mpu.getAccelX_mss();
+	accel.y = mpu.getAccelY_mss();
+	accel.z = mpu.getAccelZ_mss();
+}
+void MPU9250DMP::begin()
+{
+	mpu.begin();
+	lastRead = micros();
+}
+#endif
+void DMP::calibrateOrientation(CalibrationState s)
+{
+	switch (s)
+	{
+	case CalibrationState::flatten:
+	{
+		translation = n::invers(currentRotation);
+	}
+	break;
+
+	case CalibrationState::turn:
+	{
+		n::Quaternion toDraw = currentRotation;
+		n::multiply(translation, currentRotation, toDraw);
+	}
+	break;
+	default:
+		break;
+	}
+}
+void DMP::updateReadables()
+{
+	n::Quaternion toDraw;
+	n::multiply(currentRotation, translation, toDraw);
+	n::toPitchBank(toDraw, pitch, bank, yaw);
 }

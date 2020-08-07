@@ -1,11 +1,12 @@
 #define gyroSensor
-//#define bmpSensor
+#define bmpSensor
 #define HC12Module
 //#define SerialDebugging
 #define NEO6M
 //#define SPMSAT
 #define SERVO_CONTROL
 #define PPMRX
+//#define LED
 
 #ifdef HC12Module
 #include "sendData.h"
@@ -14,6 +15,8 @@
 #include "dmp.h"
 #ifdef bmpSensor
 #include "height.h"
+#else
+float height = 0;
 #endif
 #include <Arduino.h>
 #include "servoControl.h"
@@ -23,12 +26,14 @@
 #include "position.h"
 #endif
 //#include "compass.h"
+#ifdef LED
 #define leftLED PB8
 #define rightLED PB9
+#endif
 float heading = 0;
 #ifndef bmpSensor
 float speed = 0;
-float height = 0;
+//float height = 0;
 #endif
 int counter = 0;
 String startedMessage = "";
@@ -41,6 +46,7 @@ SPMSatRx rx(PA12, &Serial2, 6, DSM2_22, DSM2);
 #include "PPMRx.h"
 PPMRx rx(PA12, 6);
 #endif
+MPU9250DMP dmp;
 void setup()
 {
 #ifdef SPMSAT
@@ -69,7 +75,7 @@ void setup()
 #ifdef NEO6M
 	initializeGPS();
 #endif
-	beginDmp();
+	dmp.begin();
 	//calibrateGyro();
 	pinMode(PC13, OUTPUT);
 	//Serial.begin(9600);
@@ -97,15 +103,14 @@ void loop()
 		addMessage(msg);
 	}
 	//Serial.println("");
-	setServoStates(rx);
-	readGyro();
-	readAccel();
+	//setServoStates(rx);
+	dmp.readGyro();
+	dmp.readAccel();
 #ifdef NEO6M
 	readGPSPart(2);
 #endif
-	processRotations();
-	n::toPitchBank(currentRotation, pitch, bank, gyroYaw);
-	applyAccel();
+	dmp.processRotations();
+	dmp.processAcceleration();
 #ifdef HC12Module
 	//Serial.println("available: " + HC12.available());
 	//delay(50);
@@ -127,9 +132,16 @@ void loop()
 #define setLEDLength 7
 				int power = startedMessage.substring(setLEDLength).toInt();
 				addMessage("set power " + String(power));
+#ifdef LED
 				digitalWrite(PC13, power < 100 ? HIGH : LOW);
 				analogWrite(rightLED, power);
 				analogWrite(leftLED, power);
+#endif
+			}
+			else if (startedMessage.startsWith("calibrateOrientation"))
+			{
+				dmp.calibrateOrientation(DMP::CalibrationState::flatten);
+				addMessage("flattened Orientation");
 			}
 
 			startedMessage = "";
@@ -139,13 +151,14 @@ void loop()
 			break;
 		}
 	}
-	if (counter % 30 == 0)
+	if (counter % 40 == 0)
 	{
+		dmp.updateReadables();
 		writeStart();
 		write((uint8_t)2); // head 2
-		write(pitch);
-		write(bank);
-		write(-gyroYaw);
+		write(dmp.pitch);
+		write(dmp.bank);
+		write(dmp.yaw);
 		write(height);
 		write(speed);
 		writeEnd();
@@ -158,14 +171,20 @@ void loop()
 			write(rx.getChannel(i));
 		}
 		writeEnd();
+
 		//readGyro();
 #ifdef NEO6M
 		// write gps data
 		if (counter % 100 == 0)
 		{
+			speed = gps.speed.mps();
+			if (speed > 3)
+			{
+				dmp.processHeadingData(gps.course.deg() * PI / 180);
+			}
 			writeStart();
 			write<uint8_t>((uint8_t)3); // head 3
-			write(gps.time.value());
+			write<uint32_t>(gps.time.value());
 			if (gps.location.isUpdated())
 			{
 				write<double>(gps.location.lat());
