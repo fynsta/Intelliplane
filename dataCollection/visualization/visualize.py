@@ -23,7 +23,6 @@ with open(file_path) as json_file:
             timeData.append(time/1000)
         except KeyError:
             p = 0
-dataSets[0]*=180/3.1415
 for set in dataSets:
     plt.plot(timeData,set)
 plt.legend(dataSet)
