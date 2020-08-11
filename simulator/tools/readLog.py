@@ -58,10 +58,23 @@ class GPSFrame(Frame):
 
 
 class TotalDataSet:
-    def __init__(self, basic:BasicFrame, rx:RXFrame, gps:GPSFrame):
+    def __init__(self, basic: BasicFrame, rx: RXFrame, gps: GPSFrame):
         self.basic = basic
         self.rx = rx
         self.gps = gps
+
+
+class DataSetIterator:
+    def __init__(self, set):
+        self.set = set
+        self.index = 0
+
+    def __next__(self):
+        if self.index < self.set.length:
+            self.index += 1
+            return self.set[self.index]
+        else:
+            raise StopIteration
 
 
 class FlightDataSet:
@@ -135,3 +148,5 @@ class FlightDataSet:
         toReturn = copy.deepcopy(f1)
         toReturn.add(f2, factor)
         return toReturn
+    def __iter__(self):
+        return DataSetIterator(self)
