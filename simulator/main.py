@@ -1,13 +1,15 @@
 import tensorflow as tf
 import os
 from pathlib import Path
+from tensorflow.python.keras.engine.training import Model
+import numpy as np
+
+from tensorflow.python.ops.gen_math_ops import mod
 import tools.readLog as t
 base_path = Path(__file__).parent
 file_path = (base_path / "../dataCollection/logs/flight1.txt").resolve()
-#time, sets = t.readLog(file_path)
+# time, sets = t.readLog(file_path)
 dataSet = t.FlightDataSet(file_path)
-for el in dataSet:
-    print(el.basic.p)
 
 SIZE = 10
 STEP = 0.1
@@ -50,33 +52,118 @@ def genFrame(pitchSer: tf.Tensor, elvSer: tf.Tensor):
     return out
 
 
+class ElvPitchModel(tf.keras.Model):
+    def __init__(self):
+        self.elvLayer = tf.keras.layers.Dense(10)
+        self.pitchLayer = tf.keras.layers.Dense(10)
+        self.lastLayer = tf.keras.layers.Dense(1)
+
+    def call(self, elvSer, pitchSer):
+        elv = self.elvLayer(elvSer)
+        ptch = self.pitchLayer(pitchSer)
+
+        return out
+
+
+def getModel():
+    elvIn = tf.keras.layers.Input(shape=(SIZE,))
+    ptchIn = tf.keras.layers.Input(shape=(SIZE,))
+    elvLayer = tf.keras.layers.Dense(REDSIZE)(elvIn)
+    pitchLayer = tf.keras.layers.Dense(REDSIZE)(ptchIn)
+    joined = tf.keras.layers.Concatenate()([pitchLayer, elvLayer])
+    outLayer = tf.keras.layers.Dense(units=1)(joined)
+    model = tf.keras.Model(inputs=[elvIn, ptchIn], outputs=outLayer)
+    return model
+
+
+def getSamples():
+    startTime = dataSet.length/3
+    pitchSer = []
+    elvSer = []
+    labels = []
+    while startTime+STEP*SIZE < dataSet.length:
+        elvFrame = []
+        pitchFrame = []
+        for i in range(0, SIZE):
+            frame = dataSet[startTime+i*STEP]
+            elvFrame.append(frame.rx.elv)
+            pitchFrame.append(frame.basic.p)
+        pitchSer.append(pitchFrame)
+        elvSer.append(elvFrame)
+        labels.append(dataSet[startTime+STEP*SIZE].basic.p)
+        startTime += 1
+    return elvSer, pitchSer, labels
+
+
+# model = ElvPitchModel()
+model = getModel()
+model.summary()
+model.compile(
+    optimizer=tf.keras.optimizers.SGD(),
+    loss=tf.losses.mse
+)
+xdata, ydata, labels = getSamples()
+# xdata=tf.data.Dataset.from_tensors(xdata)
+# ydata=tf.data.Dataset.from_tensors(ydata)
+xdata = np.array(xdata)
+ydata = np.array(ydata)
+labels = np.array(labels)
+model.fit(
+    x=[xdata, ydata],
+    y=labels,
+    batch_size=10,
+    epochs=500
+)
+res = model.predict([xdata, ydata], batch_size=10)
+# quit()
+for i in range(labels.size):
+    print(xdata[i], ydata[i], labels[i], res[i])
+
+
+def pred(elv, pitch):
+    elv = np.array([elv])
+    pitch = np.array([pitch])
+    res = model.predict([elv, pitch])
+    return np.asscalar(res)
+
+
+pitchSer = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+elvSer = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
+while True:
+    next = pred(elvSer, pitchSer)
+    print(next)
+    pitchSer.pop(0)
+    elvSer.pop(0)
+    pitchSer.append(next)
+    elvSer.append(float(input()))
+quit()
 def loss(out, tar):
     return tf.reduce_mean(tf.square(out-tar))
 
 
-optimizer = tf.optimizers.SGD(0.01)
+optimizer=tf.optimizers.SGD(0.01)
 
 
 def optimize(pitchSer: tf.Tensor, elvSer: tf.Tensor, target):
     with tf.GradientTape() as t:
-        pred = genFrame(pitchSer, elvSer)
-        l = loss(pred, target)
-    gradients = t.gradient(l, [wElv, wPitch, wTotal])
+        pred=genFrame(pitchSer, elvSer)
+        l=loss(pred, target)
+    gradients=t.gradient(l, [wElv, wPitch, wTotal])
     optimizer.apply_gradients(zip(gradients, [wElv, wPitch, wTotal]))
     print(l.numpy())
 
 
-tfData = tfData.shuffle(100)
+tfData=tfData.shuffle(100)
 tfData=tfData.batch(10)
-for i in range(0,100):
+for i in range(0, 10):
     for (pitchSer, elvSer, batch_y) in tfData:
         optimize(pitchSer, elvSer, batch_y)
-#for step, (pitchSer, elvSer, batch_y) in enumerate(tfData.take(1000), 1):
+# for step, (pitchSer, elvSer, batch_y) in enumerate(tfData.take(1000), 1):
 #    optimize(pitchSer, elvSer, batch_y)
 
 
-testPitchSer = tf.constant([[0.5 for x in range(0, 10)]
+testPitchSer=tf.constant([[0.0 for x in range(0, 10)]
                             for n in range(0, 10)], dtype=tf.float32)
-testElvSer = tf.constant([[n/10 for x in range(0, 10)]
+testElvSer=tf.constant([[n/10 for x in range(0, 10)]
                           for n in range(0, 10)], dtype=tf.float32)
 print(genFrame(testPitchSer, testElvSer))
