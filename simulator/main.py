@@ -7,11 +7,11 @@ import numpy as np
 from tensorflow.python.ops.gen_math_ops import mod
 import tools.readLog as t
 base_path = Path(__file__).parent
-file_path = (base_path / "../dataCollection/logs/flight1.txt").resolve()
+file_path = (base_path / "../dataCollection/logs/flight0.txt").resolve()
 # time, sets = t.readLog(file_path)
 dataSet = t.FlightDataSet(file_path)
 
-SIZE = 12
+SIZE = 20
 STEP = 0.1
 REDSIZE = 5
 
