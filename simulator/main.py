@@ -11,7 +11,7 @@ file_path = (base_path / "../dataCollection/logs/flight1.txt").resolve()
 # time, sets = t.readLog(file_path)
 dataSet = t.FlightDataSet(file_path)
 
-SIZE = 10
+SIZE = 12
 STEP = 0.1
 REDSIZE = 5
 
@@ -68,10 +68,14 @@ class ElvPitchModel(tf.keras.Model):
 def getModel():
     elvIn = tf.keras.layers.Input(shape=(SIZE,))
     ptchIn = tf.keras.layers.Input(shape=(SIZE,))
+    #convElv=tf.keras.layers.Conv1D(SIZE-1,5)(elvIn)
+    #convPtch=tf.keras.layers.Convolution1D(SIZE,3)(ptchIn)
     elvLayer = tf.keras.layers.Dense(REDSIZE)(elvIn)
     pitchLayer = tf.keras.layers.Dense(REDSIZE)(ptchIn)
     joined = tf.keras.layers.Concatenate()([pitchLayer, elvLayer])
-    outLayer = tf.keras.layers.Dense(units=1)(joined)
+    dense0=tf.keras.layers.Dense(10,'tanh')(joined)
+    dense1=tf.keras.layers.Dense(5,'tanh')(dense0)
+    outLayer = tf.keras.layers.Dense(units=1)(dense1)
     model = tf.keras.Model(inputs=[elvIn, ptchIn], outputs=outLayer)
     return model
 
@@ -111,10 +115,10 @@ labels = np.array(labels)
 model.fit(
     x=[xdata, ydata],
     y=labels,
-    batch_size=10,
-    epochs=500
+    batch_size=50,
+    epochs=5000
 )
-res = model.predict([xdata, ydata], batch_size=10)
+res = model.predict([xdata, ydata], batch_size=50)
 # quit()
 for i in range(labels.size):
     print(xdata[i], ydata[i], labels[i], res[i])
@@ -127,8 +131,8 @@ def pred(elv, pitch):
     return np.asscalar(res)
 
 
-pitchSer = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-elvSer = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
+pitchSer = [0 for i in range(SIZE)]
+elvSer = [0.5 for i in range(SIZE)]
 while True:
     next = pred(elvSer, pitchSer)
     print(next)
