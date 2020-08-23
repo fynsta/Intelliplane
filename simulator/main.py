@@ -101,6 +101,7 @@ def getSamples():
 
 # model = ElvPitchModel()
 model = getModel()
+tf.keras.utils.plot_model(model)
 model.summary()
 model.compile(
     optimizer=tf.keras.optimizers.SGD(),
@@ -116,9 +117,10 @@ model.fit(
     x=[xdata, ydata],
     y=labels,
     batch_size=50,
-    epochs=5000
+    epochs=500
 )
 res = model.predict([xdata, ydata], batch_size=50)
+res2=model([xdata,ydata])
 # quit()
 for i in range(labels.size):
     print(xdata[i], ydata[i], labels[i], res[i])
