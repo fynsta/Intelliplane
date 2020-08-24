@@ -1,7 +1,6 @@
 import tensorflow as tf
 import os
 from pathlib import Path
-from tensorflow.python.keras.engine.training import Model
 import numpy as np
 
 from tensorflow.python.ops.gen_math_ops import mod
@@ -107,23 +106,25 @@ model.compile(
     optimizer=tf.keras.optimizers.SGD(),
     loss=tf.losses.mse
 )
-xdata, ydata, labels = getSamples()
-# xdata=tf.data.Dataset.from_tensors(xdata)
-# ydata=tf.data.Dataset.from_tensors(ydata)
-xdata = np.array(xdata)
-ydata = np.array(ydata)
-labels = np.array(labels)
-model.fit(
-    x=[xdata, ydata],
-    y=labels,
-    batch_size=50,
-    epochs=500
-)
-res = model.predict([xdata, ydata], batch_size=50)
-res2=model([xdata,ydata])
-# quit()
-for i in range(labels.size):
-    print(xdata[i], ydata[i], labels[i], res[i])
+if False:
+    xdata, ydata, labels = getSamples()
+    # xdata=tf.data.Dataset.from_tensors(xdata)
+    # ydata=tf.data.Dataset.from_tensors(ydata)
+    xdata = np.array(xdata)
+    ydata = np.array(ydata)
+    labels = np.array(labels)
+    model.fit(
+        x=[xdata, ydata],
+        y=labels,
+        batch_size=50,
+        epochs=10000
+    )
+    model.save_weights('./checkpoint/sim')
+    res = model.predict([xdata, ydata], batch_size=50)
+    res2=model([xdata,ydata])
+    # quit()
+else:
+    model.load_weights('./checkpoint/sim')
 
 
 def pred(elv, pitch):
