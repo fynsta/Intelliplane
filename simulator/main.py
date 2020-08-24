@@ -1,12 +1,10 @@
 import tensorflow as tf
-import os
 from pathlib import Path
 import numpy as np
 
-from tensorflow.python.ops.gen_math_ops import mod
 import tools.readLog as t
 base_path = Path(__file__).parent
-file_path = (base_path / "../dataCollection/logs/flight0.txt").resolve()
+file_path = (base_path / "../dataCollection/logs/flight2.txt").resolve()
 # time, sets = t.readLog(file_path)
 dataSet = t.FlightDataSet(file_path)
 
@@ -80,7 +78,7 @@ def getModel():
 
 
 def getSamples():
-    startTime = dataSet.length/3
+    startTime = 0
     pitchSer = []
     elvSer = []
     labels = []
