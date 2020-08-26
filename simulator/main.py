@@ -104,7 +104,7 @@ model.compile(
     optimizer=tf.keras.optimizers.Adam(),
     loss=tf.losses.mse
 )
-if True:
+if False:
     xdata, ydata, labels = getSamples()
     # xdata=tf.data.Dataset.from_tensors(xdata)
     # ydata=tf.data.Dataset.from_tensors(ydata)

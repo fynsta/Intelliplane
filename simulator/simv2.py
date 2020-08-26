@@ -34,7 +34,7 @@ def getSimulatorModel():
 model = getSimulatorModel()
 model.summary()
 
-if False:
+if True:
     import tools.readLog as tools
     base_path = Path(__file__).parent
     file_path = (base_path / "../dataCollection/logs/flight2.txt").resolve()
