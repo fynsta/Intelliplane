@@ -1,4 +1,3 @@
-from main import res
 import tensorflow as tf
 import tensorflow.keras.layers as layers
 from pathlib import Path
@@ -34,7 +33,7 @@ def getSimulatorModel():
 model = getSimulatorModel()
 model.summary()
 
-if True:
+if False:
     import tools.readLog as tools
     base_path = Path(__file__).parent
     file_path = (base_path / "../dataCollection/logs/flight2.txt").resolve()
@@ -62,7 +61,7 @@ if True:
                 elvFrame.append(frame.rx.elv)
                 pitchFrame.append(frame.basic.p)
                 bnkFrame.append(frame.basic.b)
-                velFrame.append(frame.basic.s)
+                velFrame.append(frame.basic.s/10)
                 altFrame.append(frame.basic.a-lastAlt)
 
             pitchSer.append(pitchFrame)
@@ -72,7 +71,7 @@ if True:
             bnkSer.append(bnkFrame)
             labelFrame = dataSet[startTime+STEP*HISTORY_LENGTH].basic
             labels.append([labelFrame.p, labelFrame.b,
-                           labelFrame.a-lastAlt, labelFrame.s])
+                           labelFrame.a-lastAlt, labelFrame.s/10])
             startTime += 1
         return elvSer, pitchSer, bnkSer, altSer, velSer, labels
 
@@ -94,6 +93,12 @@ if True:
     model.save_weights('./checkpointAdvancedSim/sim')
 else:
     model.load_weights('./checkpointAdvancedSim/sim')
+    import tools.readLog as tools
+    base_path = Path(__file__).parent
+    file_path = (base_path / "../dataCollection/logs/flight2.txt").resolve()
+    # time, sets = t.readLog(file_path)
+    dataSet = tools.FlightDataSet(file_path)
+    STEP = 0.1
 
 
 def predict(elvSer, pitchSer, bnkSer, altSer, velSer):
@@ -103,10 +108,20 @@ def predict(elvSer, pitchSer, bnkSer, altSer, velSer):
     return result.tolist()
 
 
-elvSer, pitchSer, bnkSer, altSer, velSer = [.5 for i in range(HISTORY_LENGTH)], [0 for i in range(HISTORY_LENGTH)], [
-    0 for i in range(HISTORY_LENGTH)], [0 for i in range(HISTORY_LENGTH)], [7 for i in range(HISTORY_LENGTH)]
+#elvSer, pitchSer, bnkSer, altSer, velSer = [.5 for i in range(HISTORY_LENGTH)], [0 for i in range(HISTORY_LENGTH)], [
+#    0 for i in range(HISTORY_LENGTH)], [0 for i in range(HISTORY_LENGTH)], [0.7 for i in range(HISTORY_LENGTH)]
+elvSer, pitchSer, bnkSer, altSer, velSer=[],[],[],[],[]
+S=100
+for i in range(HISTORY_LENGTH):
+    frame=dataSet[S+STEP*i]
+    elvSer.append(frame.rx.elv)
+    pitchSer.append(frame.basic.p)
+    altSer.append(frame.basic.a)
+    velSer.append(frame.basic.s/10)
+    bnkSer.append(frame.basic.b)
+
 while True:
-    result = predict(elvSer, pitchSer, bnkSer, altSer, velSer)
+    result = predict(elvSer, pitchSer, bnkSer, altSer, velSer)[0]
     print(result)
     elvSer.pop(0)
     pitchSer.pop(0)
@@ -117,4 +132,6 @@ while True:
     bnkSer.append(result[1])
     altSer.append(result[2])
     velSer.append(result[3])
-    elvSer.append(float(input()))
+    elvSer.append(float(input())/10)
+    for i in range(HISTORY_LENGTH):
+        altSer[i]-=result[2]
