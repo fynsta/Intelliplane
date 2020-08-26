@@ -84,3 +84,5 @@ model.fit(
     batch_size=100,
     epochs=50000
 )
+
+model.save_weights('./checkpointAdvancedSim/sim')
