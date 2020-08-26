@@ -101,10 +101,10 @@ model = getModel()
 tf.keras.utils.plot_model(model)
 model.summary()
 model.compile(
-    optimizer=tf.keras.optimizers.SGD(),
+    optimizer=tf.keras.optimizers.Adam(),
     loss=tf.losses.mse
 )
-if False:
+if True:
     xdata, ydata, labels = getSamples()
     # xdata=tf.data.Dataset.from_tensors(xdata)
     # ydata=tf.data.Dataset.from_tensors(ydata)
@@ -115,7 +115,7 @@ if False:
         x=[xdata, ydata],
         y=labels,
         batch_size=50,
-        epochs=10000
+        epochs=1000
     )
     model.save_weights('./checkpoint/sim')
     res = model.predict([xdata, ydata], batch_size=50)
@@ -134,7 +134,7 @@ def pred(elv, pitch):
 
 pitchSer = [0 for i in range(SIZE)]
 elvSer = [0.5 for i in range(SIZE)]
-while True:
+while False:
     next = pred(elvSer, pitchSer)
     print(next)
     pitchSer.pop(0)
