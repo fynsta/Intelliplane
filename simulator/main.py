@@ -130,7 +130,7 @@ def pred(elv, pitch):
     elv = np.array([elv])
     pitch = np.array([pitch])
     res = model.predict([elv, pitch])
-    return np.item(res)
+    return np.ndarray.item(res)
 
 
 pitchSer = [0 for i in range(SIZE)]
@@ -168,8 +168,7 @@ for i in range(0, 10):
 #    optimize(pitchSer, elvSer, batch_y)
 
 
-testPitchSer=tf.constant([[0.0 for x in range(0, 10)]
-                            for n in range(0, 10)], dtype=tf.float32)
-testElvSer=tf.constant([[n/10 for x in range(0, 10)]
+testPitchSer = tf.zeros([10,10], dtype=tf.float32)
+testElvSer = tf.constant([[n/10 for x in range(0, 10)]
                           for n in range(0, 10)], dtype=tf.float32)
 print(genFrame(testPitchSer, testElvSer))
