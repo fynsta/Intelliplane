@@ -31,7 +31,7 @@ def genSample():
         yield pitchSeries, elvSeries, target
         startTime += 1
 
-
+# TODO: Whats the point of the next 3 lines?
 samples = []
 for s in genSample():
     samples.append(s)
@@ -58,25 +58,25 @@ class ElvPitchModel(tf.keras.Model):
         self.pitchLayer = tf.keras.layers.Dense(10)
         self.lastLayer = tf.keras.layers.Dense(1)
 
-    def call(self, elvSer, pitchSer):
+    """def call(self, elvSer, pitchSer):
         elv = self.elvLayer(elvSer)
         ptch = self.pitchLayer(pitchSer)
 
-        return out
+        return out"""
 
 
 def getModel():
     elvIn = tf.keras.layers.Input(shape=(SIZE,))
-    ptchIn = tf.keras.layers.Input(shape=(SIZE,))
+    pitchIn = tf.keras.layers.Input(shape=(SIZE,))
     #convElv=tf.keras.layers.Conv1D(SIZE-1,5)(elvIn)
-    #convPtch=tf.keras.layers.Convolution1D(SIZE,3)(ptchIn)
+    #convPtch=tf.keras.layers.Convolution1D(SIZE,3)(pitchIn)
     elvLayer = tf.keras.layers.Dense(REDSIZE)(elvIn)
-    pitchLayer = tf.keras.layers.Dense(REDSIZE)(ptchIn)
+    pitchLayer = tf.keras.layers.Dense(REDSIZE)(pitchIn)
     joined = tf.keras.layers.Concatenate()([pitchLayer, elvLayer])
     dense0=tf.keras.layers.Dense(10,'tanh')(joined)
     dense1=tf.keras.layers.Dense(5,'tanh')(dense0)
     outLayer = tf.keras.layers.Dense(units=1)(dense1)
-    model = tf.keras.Model(inputs=[elvIn, ptchIn], outputs=outLayer)
+    model = tf.keras.Model(inputs=[elvIn, pitchIn], outputs=outLayer)
     return model
 
 
@@ -120,7 +120,7 @@ model.fit(
     epochs=500
 )
 res = model.predict([xdata, ydata], batch_size=50)
-res2=model([xdata,ydata])
+res2 = model([xdata,ydata])
 # quit()
 for i in range(labels.size):
     print(xdata[i], ydata[i], labels[i], res[i])
@@ -130,7 +130,7 @@ def pred(elv, pitch):
     elv = np.array([elv])
     pitch = np.array([pitch])
     res = model.predict([elv, pitch])
-    return np.asscalar(res)
+    return np.item(res)
 
 
 pitchSer = [0 for i in range(SIZE)]
