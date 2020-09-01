@@ -32,6 +32,27 @@ import { fstat } from 'fs';
 /**
  * @typedef {BasicFrame&GPSFrame&RXFrame} Frame
  */
+
+/**@type {(f:Frame)=>number[]}*/
+const frameToArray = (f) => {
+    return [f.p, f.b, f.h, f.a, f.s, f.thr, f.elv, f.ail, f.lat, f.lon];
+};
+
+const arrayToFrame = (a) => {
+    return {
+        p: a[0],
+        b: a[1],
+        h: a[2],
+        a: a[3],
+        s: a[4],
+        thr: a[5],
+        elv: a[6],
+        ail: a[7],
+        lat: a[8],
+        lon: a[9],
+    };
+};
+
 export class DataReader {
     /**@param {string} path */
     constructor(path) {
@@ -83,11 +104,11 @@ export class DataReader {
                     break;
                 }
             }
-            if(!maxFrame){
+            if (!maxFrame) {
                 return minFrame;
-            }else if(!minFrame){
+            } else if (!minFrame) {
                 return maxFrame;
-            }else if (maxFrame.pcTime == minFrame.pcTime) {
+            } else if (maxFrame.pcTime == minFrame.pcTime) {
                 return maxFrame;
             }
             const weight = (time - minFrame.pcTime) / (maxFrame.pcTime - minFrame.pcTime);
@@ -105,7 +126,25 @@ export class DataReader {
         const isGPS = (el) => el.lat != null;
         const gpsFrame = findFrames(minIndex, isGPS);
         const result = {};
-        Object.assign(result, rxFrame, basicFrame, gpsFrame)
+        Object.assign(result, rxFrame, basicFrame, gpsFrame);
         return result;
+    }
+
+    toArray(stepSize) {
+        return [...Array(Math.floor(this.length / stepSize)).keys()].map(el => this.getFrame(el * stepSize));
+    }
+    toTfDataset(stepSize, inputSize, outputSize) {
+        let arrayDataset = this.toArray(stepSize);
+        arrayDataset=arrayDataset.map(el=>frameToArray(el));
+        const inputs = [...Array(arrayDataset.length - inputSize - outputSize).keys()].map(el => {
+            return arrayDataset.slice(el, el + inputSize);
+        });
+        const labels = [...Array(arrayDataset.length - inputSize - outputSize).keys()].map(el => {
+            return arrayDataset.slice(el + inputSize, el + inputSize + outputSize);
+        });
+        return {
+            inputs: inputs,
+            labels: labels
+        };
     }
 }
