@@ -1,0 +1,12 @@
+{
+  "name": "simulator",
+  "version": "1.0.0",
+  "description": "simulator ai",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}
