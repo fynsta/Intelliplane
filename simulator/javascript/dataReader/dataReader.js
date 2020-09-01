@@ -1,5 +1,4 @@
-import { readFileSync } from 'fs';
-import { fstat } from 'fs';
+const fs=require('fs');
 
 /**
  * Radio input frame
@@ -53,11 +52,11 @@ const arrayToFrame = (a) => {
     };
 };
 
-export class DataReader {
+class DataReader {
     /**@param {string} path */
     constructor(path) {
 
-        const logString = readFileSync(path, { encoding: 'utf-8' });
+        const logString = fs.readFileSync(path, { encoding: 'utf-8' });
         /** @type {Frame[]} */
         this.log = JSON.parse(logString);
         const initialTime = this.log[0].pcTime;
@@ -148,3 +147,4 @@ export class DataReader {
         };
     }
 }
+module.exports=DataReader;
