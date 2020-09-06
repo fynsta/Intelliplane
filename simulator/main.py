@@ -28,10 +28,6 @@ def genSample():
         yield pitchSeries, elvSeries, target
         startTime += 1
 
-# TODO: Whats the point of the next 3 lines?
-samples = []
-for s in genSample():
-    samples.append(s)
 tfData = tf.data.Dataset.from_generator(
     genSample, output_types=(tf.float32, tf.float32, tf.float32))
 
@@ -48,18 +44,6 @@ def genFrame(pitchSer: tf.Tensor, elvSer: tf.Tensor):
     out = tf.matmul(joined, wTotal)
     return out
 
-
-class ElvPitchModel(tf.keras.Model):
-    def __init__(self):
-        self.elvLayer = tf.keras.layers.Dense(10)
-        self.pitchLayer = tf.keras.layers.Dense(10)
-        self.lastLayer = tf.keras.layers.Dense(1)
-
-    """def call(self, elvSer, pitchSer):
-        elv = self.elvLayer(elvSer)
-        ptch = self.pitchLayer(pitchSer)
-
-        return out"""
 
 
 def getModel():
