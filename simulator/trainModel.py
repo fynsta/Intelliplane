@@ -10,7 +10,7 @@ dataSet = readLog.FlightDataSet(file_path)
 SIZE = constants.INPUT_TIME_SERIES_LENGTH
 STEP = constants.STEP
 
-from models import basicModel as usedModel
+from models import advancedRnn as usedModel
 
 def train(loadBackup):
     model = usedModel.getModel(SIZE)
