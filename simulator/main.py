@@ -134,7 +134,7 @@ def pred(elv, pitch):
 
 pitchSer = [0 for i in range(SIZE)]
 elvSer = [0.5 for i in range(SIZE)]
-while False:
+while True:
     next = pred(elvSer, pitchSer)
     print(next)
     pitchSer.pop(0)
