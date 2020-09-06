@@ -1,6 +1,8 @@
 import tensorflow as tf
 
-def getModel(SIZE, REDSIZE):
+REDSIZE = 5
+
+def getModel(SIZE):
     elvIn = tf.keras.layers.Input(shape=(SIZE,))
     pitchIn = tf.keras.layers.Input(shape=(SIZE,))
     elvLayer = tf.keras.layers.Dense(REDSIZE)(elvIn)
