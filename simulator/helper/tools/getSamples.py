@@ -22,6 +22,7 @@ def __getLimitedSamples(STEP, SIZE, dataSet):
         startTime += 1
     return elvSer, pitchSer, labels
 
+
 def __getAllSamples(STEP, SIZE, dataSet):
     startTime = 0
     pitchSer = []
@@ -39,3 +40,8 @@ def __getAllSamples(STEP, SIZE, dataSet):
         labels.append(dataSet[startTime+STEP*SIZE].basic.p)
         startTime += 1
     return elvSer, pitchSer, labels
+    # TF Dataset
+    # 0. Dimension Trainingsbeispielindex
+    # 1. Dimension Zeit
+    # 2. Dimension Parameter
+    # pitch, elevator, bank, heading, throttle, aileron, speed, altitude
