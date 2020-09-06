@@ -1,6 +1,6 @@
 from tensorflow.python.keras.layers.recurrent import LSTMCell
 import tensorflow as tf
-from ..tools import modelToRnnCell
+from ..tools.modelToRnnCell import ModelRnn
 layers = tf.keras.layers
 
 
@@ -10,7 +10,7 @@ def getModel(INPUT_TIME_SERIES_LENGTH: int, PARAMETER_COUNT: int, PREDICTABLE_PA
         layers.Dense(PARAMETER_COUNT, 'relu'),
         layers.Dense(PARAMETER_COUNT, 'relu')
     ])
-    inputCell = modelToRnnCell.ModelRnn(inputModel)
+    inputCell = ModelRnn(inputModel)
     lstmCell = LSTMCell(20)
     unifiedCell = layers.StackedRNNCells([inputCell, lstmCell])
     rnnLayer = layers.RNN(unifiedCell)(input)
