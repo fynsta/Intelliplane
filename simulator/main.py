@@ -2,11 +2,10 @@ import tensorflow as tf
 from pathlib import Path
 import numpy as np
 
-import tools.readLog as t
+from tools import readLog
 base_path = Path(__file__).parent
 file_path = (base_path / "../dataCollection/logs/flight2.txt").resolve()
-# time, sets = t.readLog(file_path)
-dataSet = t.FlightDataSet(file_path)
+dataSet = readLog.FlightDataSet(file_path)
 
 SIZE = 20
 STEP = 0.1
@@ -49,8 +48,6 @@ def genFrame(pitchSer: tf.Tensor, elvSer: tf.Tensor):
 def getModel():
     elvIn = tf.keras.layers.Input(shape=(SIZE,))
     pitchIn = tf.keras.layers.Input(shape=(SIZE,))
-    #convElv=tf.keras.layers.Conv1D(SIZE-1,5)(elvIn)
-    #convPtch=tf.keras.layers.Convolution1D(SIZE,3)(pitchIn)
     elvLayer = tf.keras.layers.Dense(REDSIZE)(elvIn)
     pitchLayer = tf.keras.layers.Dense(REDSIZE)(pitchIn)
     joined = tf.keras.layers.Concatenate()([pitchLayer, elvLayer])

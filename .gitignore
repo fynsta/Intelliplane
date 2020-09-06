@@ -1,2 +1,1 @@
-simulator/tools/__pycache__/__init__.cpython-38.pyc
-simulator/tools/__pycache__/readLog.cpython-38.pyc
+*.cpython-38.pyc
