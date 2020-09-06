@@ -1,12 +1,15 @@
-from helper.models import basicModel as usedModel
 import tensorflow as tf
 from pathlib import Path
 import numpy as np
+
 
 from helper.tools import constants, readLog, getSamples
 base_path = Path(__file__).parent
 file_path = (base_path / "../dataCollection/logs/flight2.txt").resolve()
 dataSet = readLog.FlightDataSet(file_path)
+
+import importlib
+usedModel = importlib.import_module("helper.models."+constants.MODEL)
 
 SIZE = constants.INPUT_TIME_SERIES_LENGTH
 STEP = constants.STEP
