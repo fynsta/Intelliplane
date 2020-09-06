@@ -35,8 +35,8 @@ class RXFrame(Frame):
     def __init__(self, map: map):
         super().__init__(map)
         self.thr = map['thr']
-        self.elv = map['ail']
-        self.ail = map['elv']
+        self.elv = map['elv']
+        self.ail = map['ail']
 
     def add(self, b, factor):
         super().add(b, factor)
@@ -149,5 +149,6 @@ class FlightDataSet:
         toReturn = copy.deepcopy(f1)
         toReturn.add(f2, factor)
         return toReturn
+
     def __iter__(self):
         return DataSetIterator(self)
