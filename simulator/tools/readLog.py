@@ -82,6 +82,7 @@ class FlightDataSet:
         self.data = []
         with open(path) as json_file:
             data: list = json.load(json_file)
+            print(data[0])
             for point in data:
                 f = 0
                 try:
