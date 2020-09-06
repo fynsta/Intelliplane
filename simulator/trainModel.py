@@ -1,4 +1,4 @@
-from helper.models import basicModel as usedModel
+from helper.models import advancedRnn as usedModel
 import tensorflow as tf
 from pathlib import Path
 import numpy as np
@@ -13,7 +13,7 @@ STEP = constants.STEP
 
 
 def train(loadBackup):
-    model = usedModel.getModel(SIZE)
+    model = usedModel.getModel(SIZE, constants.PARAMETER_COUNT)
 
     tf.keras.utils.plot_model(model)
     model.summary()
