@@ -6,7 +6,11 @@ from tf_agents.environments import py_environment
 import random
 import numpy as np
 import tensorflow as tf
+import tensorflow_probability as tfp
+y_ref = tf.exp(tf.linspace(start=0., stop=10., num=200))
 
+tfp.math.interp_regular_1d_grid(
+    x=[6.0, 0.5, 3.3], x_ref_min=0., x_ref_max=10., y_ref=y_ref)
 SIZE = 20
 STEP = 0.1
 REDSIZE = 5
@@ -138,6 +142,7 @@ l = loss(0, output)
 
 pitchSer = [0 for i in range(SIZE)]
 elvSer = [0.5 for i in range(SIZE)]
+
 while True:
     #print(model.predict([np.array([elvSer]), np.array([pitchSer])]).numpy())
     next = predPch(elvSer, pitchSer)
