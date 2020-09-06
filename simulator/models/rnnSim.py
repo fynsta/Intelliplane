@@ -3,11 +3,10 @@ import tensorflow.keras.layers as layers
 from pathlib import Path
 import numpy as np
 
-import tools.readLog as tools
+from ..tools import readLog
 base_path = Path(__file__).parent
 file_path = (base_path / "../dataCollection/logs/flight2.txt").resolve()
-# time, sets = t.readLog(file_path)
-dataSet = tools.FlightDataSet(file_path)
+dataSet = readLog.FlightDataSet(file_path)
 
 HISTORY_LENGTH=20
 def getSingleTimeStepProcessor():
@@ -29,7 +28,7 @@ def getRNN_Model():
         tsInput=lstm[:,i]
         nextOut=stsp(tsInput)
         outputs.append(nextOut)
-    unifiedOut=tf.concat(outputs,axis=1)
+    unifiedOut=tf.concat(values=outputs,axis=1)
     return tf.keras.Model([elvHist,pchHist],unifiedOut)
 model=getRNN_Model()
 model.summary()
