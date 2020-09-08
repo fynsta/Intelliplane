@@ -1,3 +1,4 @@
+import importlib
 import tensorflow as tf
 from pathlib import Path
 import numpy as np
@@ -8,15 +9,14 @@ base_path = Path(__file__).parent
 file_path = (base_path / "../dataCollection/logs/flight0.txt").resolve()
 dataSet = readLog.FlightDataSet(file_path)
 
-import importlib
 usedModel = importlib.import_module("helper.models."+constants.MODEL)
 
 SIZE = constants.INPUT_TIME_SERIES_LENGTH
 STEP = constants.STEP
 
 
-def train(loadBackup):
-    model = usedModel.getModel(SIZE)
+def train(loadBackup:bool):
+    model:tf.keras.Model = usedModel.getModel(SIZE)
 
     tf.keras.utils.plot_model(model)
     model.summary()
@@ -26,7 +26,7 @@ def train(loadBackup):
     )
 
     if loadBackup:
-        model.load_weights('./checkpoint/sim')
+        model.load_weights('./checkpoint/'+constants.MODEL+'/sim')
     else:
         xdata, ydata, labels = getSamples.load(STEP, SIZE, dataSet)
         xdata = np.array(xdata)
@@ -38,6 +38,6 @@ def train(loadBackup):
             batch_size=50,
             epochs=5000
         )
-        model.save_weights('./checkpoint/sim')
+        model.save_weights('./checkpoint/'+constants.MODEL+'/sim')
 
     return model

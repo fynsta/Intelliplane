@@ -1,10 +1,14 @@
-def load(STEP, SIZE, dataSet, scope="limited"):
+from .readLog import FlightDataSet
+
+
+def load(STEP, SIZE, dataSet: FlightDataSet, scope="limited"):
     if scope == "limited":
         return __getLimitedSamples(STEP, SIZE, dataSet)
     else:
         return __getAllSamples(STEP, SIZE, dataSet)
 
-def __getLimitedSamples(STEP, SIZE, dataSet):
+
+def __getLimitedSamples(STEP, SIZE, dataSet: FlightDataSet):
     startTime = 0
     pitchSer = []
     elvSer = []
@@ -23,7 +27,7 @@ def __getLimitedSamples(STEP, SIZE, dataSet):
     return elvSer, pitchSer, labels
 
 
-def __getAllSamples(STEP, SIZE, dataSet):
+def __getAllSamples(STEP, SIZE, dataSet: FlightDataSet):
     startTime = 0
     pitchSer = []
     elvSer = []
