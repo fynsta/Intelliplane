@@ -5,4 +5,4 @@ import trainModel
 SIZE = constants.INPUT_TIME_SERIES_LENGTH
 
 model = trainModel.train(constants.LOADBACKUP)
-predictNext.predictFromInput(SIZE, model)
+predictNext.predictFromInputNewDataStructure(SIZE, model)
