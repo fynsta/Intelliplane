@@ -35,5 +35,13 @@ function linInterpolation(x, x_ref_min, x_ref_max, y_ref) {
     const result = tf.add(minValues, summand);
     return result;
 }
+
+tf.customGrad((x, x_ref_min, x_ref_max, y_ref)=>{
+    return {
+        value:linInterpolation(x, x_ref_min, x_ref_max, y_ref),
+        gradFunc:dy=>{
+            dOutdy=
+        }
+    };
+});
 module.exports = linInterpolation;
-tf.load_

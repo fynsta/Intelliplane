@@ -39,7 +39,7 @@ def getCellModel(INPUT_TIME_SERIES_LENGTH=20, PARAMETER_COUNT=2, PREDICTABLE_PAR
     return tf.keras.Model(input, [output, state]), True, tf.keras.Model([cellInput, cellStateHInput, cellStateCInput], [cellNetworkOutput, newCellState]), cell
 
 
-def getCell(INPUT_TIME_SERIES_LENGTH=20, PARAMETER_COUNT=2, PREDICTABLE_PARAM_COUNT=1):
+def getCell(INPUT_TIME_SERIES_LENGTH=20, CONTROLLABLE_PARAMETER_COUNT=1, PREDICTABLE_PARAM_COUNT=1):
     LSTM_STATE_SIZE = 15
 
     def getOutputProcessor():
@@ -53,4 +53,8 @@ def getCell(INPUT_TIME_SERIES_LENGTH=20, PARAMETER_COUNT=2, PREDICTABLE_PARAM_CO
     outputPorcessorCell = ModelRnn(outputPorcessor)
     lstmCell = layers.LSTMCell(LSTM_STATE_SIZE)
     cell = layers.StackedRNNCells([lstmCell, outputPorcessorCell])
-    return cell
+    model = tf.keras.Sequential([
+        layers.RNN(cell, input_shape=(INPUT_TIME_SERIES_LENGTH,
+                                      PREDICTABLE_PARAM_COUNT+CONTROLLABLE_PARAMETER_COUNT,))
+    ])
+    return model, cell

@@ -10,6 +10,9 @@ class ModelRnn(tf.keras.layers.AbstractRNNCell):
     def state_size(self):
         return 0
 
+    @property
+    def output_size(self):
+        return self.model.output_shape
     def build(self, input_shape):
         # self.model.build(input_shape)
         self.built = True
@@ -17,6 +20,3 @@ class ModelRnn(tf.keras.layers.AbstractRNNCell):
     def call(self, inputs, states):
         y = self.model(inputs)
         return y, states
-
-    # def get_initial_state(inputs=None, batch_size=None, dtype=None):
-    #    return []
