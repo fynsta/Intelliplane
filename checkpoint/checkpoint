@@ -1,2 +1,2 @@
-model_checkpoint_path: "sim"
-all_model_checkpoint_paths: "sim"
+model_checkpoint_path: "trainer"
+all_model_checkpoint_paths: "trainer"

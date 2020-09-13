@@ -37,7 +37,7 @@ def train(loadBackup: bool):
                 x=inputs,
                 y=outputs,
                 batch_size=50,
-                epochs=5000
+                epochs=1000
             )
         else:
             xdata, ydata, labels = getSamples.load(STEP, SIZE, dataSet)
