@@ -16,11 +16,11 @@ class Frame:
 class BasicFrame(Frame):
     def __init__(self, map: map):
         super().__init__(map)
-        self.p = map['p']
-        self.b = map['b']
-        self.h = map['h']
-        self.a = map['a']
-        self.s = map['s']
+        self.p:float = map['p']
+        self.b:float = map['b']
+        self.h:float = map['h']
+        self.a:float = map['a']
+        self.s:float = map['s']
 
     def add(self, b, factor):
         super().add(b, factor)
@@ -78,7 +78,7 @@ class DataSetIterator:
 
 
 class FlightDataSet:
-    def __init__(self, path):
+    def __init__(self, path,throttleCut=0.2):
         self.data = []
         with open(path) as json_file:
             data: list = json.load(json_file)
@@ -99,8 +99,20 @@ class FlightDataSet:
                     pass
                 if f != 0:
                     self.data.append(f)
+        while True:
+            frame=self.data[0]
+            if isinstance(frame,RXFrame) and frame.thr>throttleCut:
+                break
+            else:
+                self.data.pop(0)
+        while True:
+            frame=self.data[-1]
+            if isinstance(frame,RXFrame) and frame.thr>throttleCut:
+                break
+            else:
+                self.data.pop(-1)
         self.startTime = self.data[0].time
-        self.length = self.data[len(self.data)-1].time-self.startTime
+        self.length = self.data[-1].time-self.startTime
 
     def __getitem__(self, time):
         time += self.startTime
@@ -152,3 +164,9 @@ class FlightDataSet:
 
     def __iter__(self):
         return DataSetIterator(self)
+    def __iadd__(self,other):
+        for frame in other.data:
+            frame.time+=self.length+self.startTime-other.startTime+0.5
+            self.data.append(frame)
+        self.length+=other.length
+        return self

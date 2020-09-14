@@ -4,6 +4,8 @@ from .readLog import FlightDataSet
 def load(STEP, SIZE, dataSet: FlightDataSet, scope="limited"):
     if scope == "limited":
         return __getLimitedSamples(STEP, SIZE, dataSet)
+    elif scope == "newStructure":
+        return __getPitchElvNewDatastructure(STEP, SIZE, dataSet)
     else:
         return __getAllSamples(STEP, SIZE, dataSet)
 
@@ -27,11 +29,11 @@ def __getLimitedSamples(STEP, SIZE, dataSet: FlightDataSet):
     return elvSer, pitchSer, labels
 
 
-def __getAllSamples(STEP, SIZE, dataSet: FlightDataSet):
+def __getPitchElvNewDatastructure(STEP, SIZE, dataSet: FlightDataSet):
     startTime = 0
-    inputs, labels=[],[]
+    inputs, labels = [], []
     while startTime+STEP*SIZE < dataSet.length:
-        series=[]
+        series = []
         for i in range(0, SIZE):
             frame = dataSet[startTime+i*STEP]
             series.append([frame.basic.p, frame.rx.elv])
@@ -39,8 +41,24 @@ def __getAllSamples(STEP, SIZE, dataSet: FlightDataSet):
         labels.append([dataSet[startTime+STEP*SIZE].basic.p])
         startTime += 1
     return inputs, labels
+
+
+def __getAllSamples(STEP, SIZE, dataSet: FlightDataSet):
+    startTime = 0
+    inputs, labels = [], []
+    while startTime+STEP*SIZE < dataSet.length:
+        series = []
+        for i in range(0, SIZE):
+            frame = dataSet[startTime+i*STEP]
+            series.append([frame.basic.p, frame.basic.b, frame.basic.s,
+                           frame.rx.thr, frame.rx.elv, frame.rx.ail])
+        inputs.append(series)
+        nextFrame=dataSet[startTime+STEP*SIZE]
+        labels.append([nextFrame.basic.p,nextFrame.basic.b, nextFrame.basic.s])
+        startTime += 1
+    return inputs, labels
     # TF Dataset
     # 0. Dimension Trainingsbeispielindex
     # 1. Dimension Zeit
     # 2. Dimension Parameter
-    # pitch, elevator, bank, heading, throttle, aileron, speed, altitude
+    # pitch, bank, heading, speed, altitude, throttle, elevator, aileron

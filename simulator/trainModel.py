@@ -7,8 +7,11 @@ import numpy as np
 
 from helper.tools import constants, readLog, getSamples
 base_path = Path(__file__).parent
-file_path = (base_path / "../dataCollection/logs/flight0.txt").resolve()
-dataSet = readLog.FlightDataSet(file_path)
+file_path = (base_path / "../dataCollection/logs/flight").resolve()
+
+dataSet = readLog.FlightDataSet(str(file_path)+'0.txt')
+for i in range(1,4):
+    dataSet+=readLog.FlightDataSet(str(file_path)+str(i)+'.txt')
 
 usedModel = importlib.import_module("helper.models."+constants.MODEL)
 
@@ -23,7 +26,7 @@ def train(loadBackup: bool):
     tf.keras.utils.plot_model(model)
     model.summary()
     model.compile(
-        optimizer=tf.keras.optimizers.Adam(0.0005),
+        optimizer=tf.keras.optimizers.Adam(0.0003),
         loss=tf.losses.mse
     )
 
@@ -37,7 +40,7 @@ def train(loadBackup: bool):
                 x=inputs,
                 y=outputs,
                 batch_size=50,
-                epochs=1000
+                epochs=2000
             )
         else:
             xdata, ydata, labels = getSamples.load(STEP, SIZE, dataSet)
