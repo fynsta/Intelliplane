@@ -47,6 +47,7 @@ def getApTrainer():
 
 trainer=getApTrainer()
 trainer.summary()
+tf.keras.utils.plot_model(trainer, 'rnn_ap.png')
 
 def minimizePitchLoss(y_true,y_pred):
     return tf.reduce_mean(tf.reduce_mean(tf.square(y_pred)))
