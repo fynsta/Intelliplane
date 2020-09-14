@@ -50,11 +50,11 @@ def __getAllSamples(STEP, SIZE, dataSet: FlightDataSet):
         series = []
         for i in range(0, SIZE):
             frame = dataSet[startTime+i*STEP]
-            series.append([frame.basic.p, frame.basic.b, frame.basic.s,
+            series.append([frame.basic.p, frame.basic.b, 
                            frame.rx.thr, frame.rx.elv, frame.rx.ail])
         inputs.append(series)
         nextFrame=dataSet[startTime+STEP*SIZE]
-        labels.append([nextFrame.basic.p,nextFrame.basic.b, nextFrame.basic.s])
+        labels.append([nextFrame.basic.p,nextFrame.basic.b,])
         startTime += 1
     return inputs, labels
     # TF Dataset

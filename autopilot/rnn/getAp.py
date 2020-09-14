@@ -16,9 +16,9 @@ parent_dir = os.path.dirname(os.path.dirname(current_dir))
 helperDir = os.path.join(parent_dir, 'simulator')
 sys.path.insert(0, helperDir)
 from helper.tools.modelToRnnCell import ModelRnn
+from helper.tools.constants import PREDICTABLE_PARAM_COUNT,CONTROLLABLE_PARAM_COUNT
 
-
-def getAp(CONTROLLABLE_PARAMETER_COUNT=1, PREDICTABLE_PARAM_COUNT=1):
+def getAp(CONTROLLABLE_PARAMETER_COUNT=CONTROLLABLE_PARAM_COUNT, PREDICTABLE_PARAM_COUNT=PREDICTABLE_PARAM_COUNT):
     LSTM_STATE_SIZE = 15
 
     def getOutputProcessor():

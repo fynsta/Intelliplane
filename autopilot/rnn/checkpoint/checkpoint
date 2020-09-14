@@ -1,0 +1,2 @@
+model_checkpoint_path: "trainer"
+all_model_checkpoint_paths: "trainer"

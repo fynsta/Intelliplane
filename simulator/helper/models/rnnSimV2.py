@@ -4,21 +4,23 @@ layers = tf.keras.layers
 
 
 def getModel(INPUT_TIME_SERIES_LENGTH=20, PARAMETER_COUNT=2, PREDICTABLE_PARAM_COUNT=1):
-    LSTM_STATE_SIZE = 15
+    LSTM_STATE_SIZE = 10
 
     def getOutputProcessor():
         procInput = layers.Input((LSTM_STATE_SIZE,))
-        dense0 = layers.Dense(15, activation='relu')(procInput)
+        dense0 = layers.Dense(10, activation='relu')(procInput)
         dense1 = layers.Dense(10, activation='relu')(dense0)
-        output = layers.Dense(PREDICTABLE_PARAM_COUNT)(dense1)
+        dense2 = layers.Dense(7, activation='relu')(dense1)
+        output = layers.Dense(PREDICTABLE_PARAM_COUNT)(dense2)
         return tf.keras.Model(procInput, output)
 
     outputPorcessor = getOutputProcessor()
     outputPorcessorCell = ModelRnn(outputPorcessor)
     lstmCell = layers.LSTMCell(LSTM_STATE_SIZE)
-    cell = layers.StackedRNNCells([lstmCell, outputPorcessorCell])
-    rnn=layers.RNN(cell, input_shape=(None,
-                                      PARAMETER_COUNT,))
+    cell = layers.StackedRNNCells(
+        [layers.LSTMCell(LSTM_STATE_SIZE), lstmCell, outputPorcessorCell])
+    rnn = layers.RNN(cell, input_shape=(None,
+                                        PARAMETER_COUNT,))
     model = tf.keras.Sequential([
         rnn
     ])
@@ -65,8 +67,8 @@ def getCell(INPUT_TIME_SERIES_LENGTH=20, CONTROLLABLE_PARAMETER_COUNT=1, PREDICT
     outputPorcessorCell = ModelRnn(outputPorcessor)
     lstmCell = layers.LSTMCell(LSTM_STATE_SIZE)
     cell = layers.StackedRNNCells([lstmCell, outputPorcessorCell])
-    rnn=layers.RNN(cell, input_shape=(None,
-                                      PREDICTABLE_PARAM_COUNT+CONTROLLABLE_PARAMETER_COUNT,))
+    rnn = layers.RNN(cell, input_shape=(None,
+                                        PREDICTABLE_PARAM_COUNT+CONTROLLABLE_PARAMETER_COUNT,))
     model = tf.keras.Sequential([
         rnn
     ])

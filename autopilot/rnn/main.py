@@ -40,7 +40,7 @@ def getApTrainer():
         simOutput = simLayer(nextInput, initial_state=simState)
         simParams = simOutput[0]
         simState = simOutput[1:]
-        outputs.append(simParams)
+        outputs.append(tf.expand_dims(simParams,1))
     outputTensor=layers.concatenate(outputs,1)
     return tf.keras.Model(input,outputTensor)
 
@@ -50,17 +50,19 @@ trainer.summary()
 tf.keras.utils.plot_model(trainer, 'rnn_ap.png')
 
 def minimizePitchLoss(y_true,y_pred):
+    #return tf.reduce_mean(tf.reduce_mean(tf.square(0.1-y_pred[:,:,0]+tf.square(y_pred[:,:,1])+0.01*tf.square(6-y_pred[:,:,2]))))
     return tf.reduce_mean(tf.reduce_mean(tf.square(y_pred)))
 
 trainer.compile(
+    optimizer=tf.keras.optimizers.Adam(0.0001),
     loss=minimizePitchLoss
 )
-if False:
+if True:
     trainer.fit(
         x=startingPoints,
         y=spam,
-        batch_size=50,
-        epochs=100
+        batch_size=200,
+        epochs=1500
     )
     trainer.save_weights('./checkpoint/trainer')
 else:

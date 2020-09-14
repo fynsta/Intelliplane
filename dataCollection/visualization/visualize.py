@@ -8,7 +8,7 @@ for var in dataSet:
     dataSets.append([])
 timeData = []
 base_path = Path(__file__).parent
-file_path = (base_path / "../logs/flight1.txt").resolve()
+file_path = (base_path / "../logs/flight2.txt").resolve()
 with open(file_path) as json_file:
     data: list = json.load(json_file)
     print(len(data))

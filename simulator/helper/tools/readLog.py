@@ -78,7 +78,7 @@ class DataSetIterator:
 
 
 class FlightDataSet:
-    def __init__(self, path,throttleCut=0.2):
+    def __init__(self, path,speedCut=2):
         self.data = []
         with open(path) as json_file:
             data: list = json.load(json_file)
@@ -101,18 +101,37 @@ class FlightDataSet:
                     self.data.append(f)
         while True:
             frame=self.data[0]
-            if isinstance(frame,RXFrame) and frame.thr>throttleCut:
+            if isinstance(frame,BasicFrame) and frame.s>speedCut:
                 break
             else:
                 self.data.pop(0)
         while True:
             frame=self.data[-1]
-            if isinstance(frame,RXFrame) and frame.thr>throttleCut:
+            if isinstance(frame,BasicFrame) and frame.s>speedCut:
                 break
             else:
                 self.data.pop(-1)
         self.startTime = self.data[0].time
         self.length = self.data[-1].time-self.startTime
+
+        basicFrames=list(filter(lambda frame:isinstance(frame,BasicFrame),self.data))
+        newSpeedValues=[]
+        lastChange=0
+        lastValue=0
+        for index,frame in enumerate(basicFrames):
+            if frame.s !=lastValue:
+                newSpeedValues.append((lastChange,lastValue))
+                lastChange=index
+                lastValue=frame.s
+        last=newSpeedValues[0]
+        for startIndex,value in newSpeedValues:
+            length=-last[0]+startIndex
+            if length==0:
+                continue
+            delta=value-last[1]
+            for i in range(last[0],startIndex):
+                basicFrames[i].s=last[1]+(i-last[0])/length*delta
+            last=(startIndex,value)
 
     def __getitem__(self, time):
         time += self.startTime

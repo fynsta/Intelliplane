@@ -14,7 +14,7 @@ from helper.tools import constants
 SIZE = constants.INPUT_TIME_SERIES_LENGTH
 
 usedModel = importlib.import_module("helper.models."+constants.MODEL)
-simulator:tf.keras.Model = usedModel.getModel(SIZE)[0]
+simulator:tf.keras.Model = usedModel.getModel(SIZE, constants.PARAMETER_COUNT, constants.PREDICTABLE_PARAM_COUNT)[0]
 simulator.load_weights(os.path.join(
     parent_dir, 'simulator', 'checkpoint', constants.MODEL, 'sim'))
 
