@@ -50,15 +50,18 @@ def __getAllSamples(STEP, SIZE, dataSet: FlightDataSet):
         series = []
         for i in range(0, SIZE):
             frame = dataSet[startTime+i*STEP]
-            series.append([frame.basic.p, frame.basic.b, 
+            series.append([frame.basic.p, frame.basic.b, frame.basic.s/10,frame.basic.a,
                            frame.rx.thr, frame.rx.elv, frame.rx.ail])
+        offset=series[-1][3]
+        for el in series:
+            el[3]-=offset
         inputs.append(series)
         nextFrame=dataSet[startTime+STEP*SIZE]
-        labels.append([nextFrame.basic.p,nextFrame.basic.b,])
+        labels.append([nextFrame.basic.p,nextFrame.basic.b,nextFrame.basic.s/10,nextFrame.basic.a-offset])
         startTime += 1
     return inputs, labels
     # TF Dataset
     # 0. Dimension Trainingsbeispielindex
     # 1. Dimension Zeit
     # 2. Dimension Parameter
-    # pitch, bank, heading, speed, altitude, throttle, elevator, aileron
+    # pitch, bank, speed, altitude, throttle, elevator, aileron

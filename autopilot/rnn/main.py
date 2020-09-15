@@ -49,13 +49,13 @@ trainer=getApTrainer()
 trainer.summary()
 tf.keras.utils.plot_model(trainer, 'rnn_ap.png')
 
-def minimizePitchLoss(y_true,y_pred):
+def pitchLoss(y_true,y_pred):
     #return tf.reduce_mean(tf.reduce_mean(tf.square(0.1-y_pred[:,:,0]+tf.square(y_pred[:,:,1])+0.01*tf.square(6-y_pred[:,:,2]))))
     return tf.reduce_mean(tf.reduce_mean(tf.square(y_pred)))
 
 trainer.compile(
     optimizer=tf.keras.optimizers.Adam(0.0001),
-    loss=minimizePitchLoss
+    loss=pitchLoss
 )
 if True:
     trainer.fit(
@@ -82,12 +82,12 @@ simState = simOutput[1:]
 
 
 while True:
-        print(simParams.numpy(),'|',apParams.numpy())
-        nextInput = unifyParameters(simParams, apParams)
-        nextInput=tf.expand_dims(nextInput,axis=1)
-        apOutput = apLayer(nextInput, initial_state=apState)
-        apParams = apOutput[0]
-        apState = apOutput[1:]
-        simOutput = simLayer(nextInput, initial_state=simState)
-        simParams = simOutput[0]
-        simState = simOutput[1:]
+    print(simParams.numpy(),'|',apParams.numpy())
+    nextInput = unifyParameters(simParams, apParams)
+    nextInput=tf.expand_dims(nextInput,axis=1)
+    apOutput = apLayer(nextInput, initial_state=apState)
+    apParams = apOutput[0]
+    apState = apOutput[1:]
+    simOutput = simLayer(nextInput, initial_state=simState)
+    simParams = simOutput[0]
+    simState = simOutput[1:]
