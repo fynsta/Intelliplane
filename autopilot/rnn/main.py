@@ -57,7 +57,7 @@ trainer.compile(
     optimizer=tf.keras.optimizers.Adam(0.0001),
     loss=minimizePitchLoss
 )
-if True:
+if False:
     trainer.fit(
         x=startingPoints,
         y=spam,
