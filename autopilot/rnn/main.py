@@ -19,7 +19,8 @@ def unifyParameters(predictableParameters: tf.Tensor, controllableParameters: tf
 
 
 def getApTrainer():
-    input = layers.Input((None, constants.PARAMETER_COUNT))
+    input = layers.Input((None, constants.PARAMETER_COUNT,))
+    absoluteHeight=input[:,-1,3]
     apLayer: layers.RNN = ap.layers[0]
     apLayer.return_state = True
     apOutput = apLayer(input)
@@ -29,6 +30,7 @@ def getApTrainer():
     simLayer.return_state = True
     simOutput = simLayer(input)
     simParams = simOutput[0]
+    absoluteHeight=absoluteHeight+simParams[:,3]
     simState = simOutput[1:]
     outputs=[]
     for i in range(20):
@@ -50,8 +52,8 @@ trainer.summary()
 tf.keras.utils.plot_model(trainer, 'rnn_ap.png')
 
 def pitchLoss(y_true,y_pred):
-    #return tf.reduce_mean(tf.reduce_mean(tf.square(0.1-y_pred[:,:,0]+tf.square(y_pred[:,:,1])+0.01*tf.square(6-y_pred[:,:,2]))))
-    return tf.reduce_mean(tf.reduce_mean(tf.square(y_pred)))
+    return tf.math.reduce_mean(tf.reduce_mean(tf.square(0.1-y_pred[:,:,0]+tf.square(y_pred[:,:,1])+0.01*tf.square(6-y_pred[:,:,2])), axis=1),axis=0)
+    #return tf.reduce_mean(tf.reduce_mean(tf.square(y_pred)))
 
 trainer.compile(
     optimizer=tf.keras.optimizers.Adam(0.0001),
