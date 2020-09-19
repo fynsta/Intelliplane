@@ -50,22 +50,30 @@ Nun stellt sich natürlich die Frage, was man mit einem Autopiloten anfangen sol
 Beispielsweise wird die Höhe immer auf 0m gesteuert. Wenn sich das Flugzeug dann 20m unter der Zielhöhe befindet, wird dem Autopiloten eine Höhe von -20m gemeldet. So lässt sich das Training sehr vereinfachen.
 Es spricht aber nichts dagegen, dem Autopiloten in einer späteren Version auch eine Zielgeschwindigkeit zu übergeben.
 
+Das Autopilottrainingsnetzwerk funktioniert folgendermaßen: Autopilot und Simulator initialisieren ihren internen Speicher durch das Verarbeiten der Startsituation. Dann bestimmen Autopilot und Simulator die nächsten Steuerungssignale, Parameter und Speicherstatus. Nach diesem Prinzip werden die Netzwerke einige Male mit ihren eigenen Ausgaben als Eingaben aufgerufen.
+So steuert der Autopilot die nächsten paar Zeitschritte und wird dafür von der Fehlerfunktion bewertet.
+
 
 
 Euer Ergebnis
 
 Wie habt ihr euer Projekt ausgewertet? Welche Genauigkeit habt ihr auf Trainingsdaten und auf Testdaten erreicht?
-Mit dem Ziel, dass das Flugzeug einfach eine Höhe hält, wurden gute Ergebnisse im Simulator erzielt. Ein Test am wirklichen Modellflugzeug hat unseren Aufwand überschritten.
-Andere Ziele (einen Punkt im Raum ansteuern, Warteschleifen fliegen, o.ä.) lassen sich durch eine Veränderung der Fehlerfunktion relativ leicht implementieren.
+Hier wurden mehrere Varianten getestet. In der einfachsten Version werden nur Anstellwinkel und Höhenruderausschlag betrachtet. Der Simulator wurde einzeln getestet und liefert sehr plausible Ergebnisse:
+Wenn man nach oben lenkt, erhöht sich der Anstellwinkel und andersherum. Auch eine gewisse Latenz und Trägheit hat die KI gelernt. Der Autopilot steuert den Anstellwinkel schnell und präzise auf null.
+Auch eine Erweiterung auf die Schräglage war schnell möglich.
+Für eine Erweiterung auf Höhe und Geschwindigkeit ist auch eine Version des Netzwerks geschrieben, das Training des Simulators führt leider noch nicht zu einem zufriedenstellenden Fehlerwert, ergibt sich auch beim manuellen Testen des Simulators.
+Trotzdem hat der Autopilot interessanter Weise kein Problem damit, die Höhe zu halten, deshalb sind wir zuversichtlich, dass der Autopilot auch bei einem korrekt funktionierenden Simulator gut arbeiten würde.
+
+Ein Test am wirklichen Modellflugzeug hat unseren Aufwand überschritten. Die technischen Gegebenheiten sind dafür aber bereits gegeben.
 
 Was habt ihr entwickelt?
 Zusammengefasst haben wir einen Flugsimulator entwickelt, der das Verhalten eines Flugzeugen bei Steuerinputs aufgrund der vorherigen Daten vorher sagt, und einen
-Autopiloten, welcher mit einem Ziel (Flugzeug gerade halen, Punkt ansteuern) Steuerbefehle so gibt, dass dieses erreicht wird.
+Autopiloten, welcher mit einem Ziel (Flugzeug auf eine Höhe steuern, gerade halten) Steuerbefehle so gibt, dass dieses erreicht wird.
 
 Was benötigt man, um euer Ergebnis nutzen zu können? (Handy, GitHub, Internet, Rasberry Pi...)
-Grundsätzlich braucht man ein Flugzeug, welches unserem in der Art seiner Sensorik und Elektronik ähnelt, wahrscheinlich sind geringe Modifikationen des Quellcodes von
-Nöten. Fernen muss das Flugzeug mit einem Arduino o.ä. bestückt sein, welcher von einem Laptop Daten empfangen und bearbeiten kann. Unser Projekt ist vollständig auf
-GitHub zu finden.
+Grundsätzlich braucht man ein Flugzeug, welches die benötigten Trainingsdaten für den Simulator aufnehmen kann. Am Computer wird dann mit den Trainingsdaten der Simulator und mit dem Simulator der Autopilot trainiert.
+Dann kann der Autopilot entweder virtuell mithilfe des Simulators ausprobiert werden oder in einer späteren Version auf ein TensorFlow Lite-fähiges Gerät wie einen Arduino hochgeladen werden. Die Steuerbefehle werden dann per Funk übertragen.
+Unser Projekt ist vollständig auf GitHub zu finden.
 
 Anleitung für den Nutzer
 (%%das wird was...)
