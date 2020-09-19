@@ -11,33 +11,45 @@ Intelliplane
 Praktische Relevanz und Innovationskraft
 
 Was ist das Ziel des Projekts?
-Das Ziel des Projektes ist es einen Autopiloten für ein Modellflugzeug, bzw. speziell einen Nurflügler (%%Technische Details??)
- zu erstellen, sodass dieser sich selbst in der Luft hält und am Besten einen gesetzten Zielpunkt erreichen kann.
+Das Ziel des Projektes ist es einen selbst lernenden Autopiloten für ein Modellflugzeug
+ zu erstellen, der für Verkehrsflugzeuge übliche Ziele erreicht.
 
 Warum ist euer Projekt wichtig?
 Autopiloten übernehmen bei Flugzeugen, Schiffen und Autos zunehmend wichtige undtragende Rollen und sind nicht mehr weg zu
- denken. Wie auch bei unserem Modell werden bei einem richtigen Flugzeug anhand der eingehenden Messdaten Kurskorrekturen
-vorgenommen.
+ denken. Herkömmliche, auf Regelungssystemen basierende Autopiloten erfordern eine manuelle Konfiguration der Parameter, um gut zu funktionieren und haben teilweise Probleme mit schwierigen Wettersituationen.
+ Durch den Einsatz von maschinellem Lernen lassen sich diese Probleme potenziell umgehen.
 
 Wer kann euere Ergebnisse verwenden? Was ist der Anwendungsfall?
-Da das Projekt auf Modellflugzeuge ausgelegt ist, ist die Anwendung begrenzt. Denkbar ist jedoch zum Beispiel ein
-"Rückholassistenz", welcher ein Modellflugzeug zum Piloten (%%?) zurück fliegt, wenn die Verbindung abreißt, und
-dann sicher kreisen lässt.
+Mit nur geringen Veränderungen lässt sich das System auf fast jedes Luftfahrtzeug anwenden. So lassen sich Modellflugzeuge, Lieferungsdrohnen bis hin zu Verkehrsfugzeugen steuern.
+Zu beachten ist allerdings, dass unser Autopilot lediglich die Low-Level-Steuerung übernimmt, d.h. die Navigation muss durch eine andere Logik übernommen werden.
 
 Eingesetzte Methoden
 
 Beschreibung eures Datensatzes (Herkunft, Größe, Klassen...)
-Wir haben bei Testflügen mit dem Modellflugzeug alle in regelmäßigen Abständen verschiedene Daten abgegriffen (%%welche musst du wohl schreiben Ole. Ich lass mal frei...)
+Wir haben bei Testflügen mit dem Modellflugzeug in regelmäßigen Abständen Parameter gemessen, die die Bewegung, Lage und Steuerung desselben im Raum möglichst vollständig beschreiben.
+Dazu gehören Höhe, Position, Geschwindigkeit, Anstellwinkel ("pitch"), Schräglage ("bank"), Flugrichtung ("heading"), Höhen- und Querruderausschlaf sowie das Gas.
+Dazu wurde ein eigenes Telemetriesystem entwickelt, das auf einen Kreisel, einen Beschleunigungssensor, einen barometrischen Drucksensor sowie einen GPS-Empfänger zurückgreift.
+Aufgenommen wurden damit vier Flüge mit jeweils circa 10 min Flugzeit.
 
 Aufbereitung der Daten und sonstige Vorbereitungen
 (%%das auch...)#
 
 Beschreibung eurer Methoden (Aufbau neuronales Netz, machine learning model, Trainieren und Testen der Daten...)
 Da wir den Autopiloten nicht in Echtzeit auf dem Flugzeug testen können, mussten wir zwei neuronale Netze entwickeln: Bei dem einen handelt
-es sich um einen Flugsimulator, welcher aus vorangegangenen Mess- und Steuerdaten die nächsten Daten vorhersagt. Mit Hilfe dieses Netzes
-kann dann der eigentiche Autopilot trainiert werden. Bei beiden netzen handelt es sich um rekurrente neurale Netze. Ein neuronales Netzwerk
-in einer "cell" ermittelt aus jeweils einem Datenpunkt und einem "state" ein Ouput und einen weiteren state. Dahinter wird dann die nächste
-Zelle geschaltet, welche den alten State als Input annimmt. Mit dem abstrakten state haben Daten über mehrere Zellen hinaus Einfluss auf das Ergebnis.
+es sich um einen Flugsimulator, welcher aus vorangegangenen Mess- und Steuerdaten die nächsten Daten vorhersagt. Dieses kann mit herkömmlichen supervised learning trainiert werden.
+Mit Hilfe dieses Netzes kann dann der eigentiche Autopilot trainiert werden. Der Autopilot wird darauf trainiert, aus bestimmten Startsituationen heraus in einigen Zeitschritten einige Parameter wie den Anstellwinkel auf einen bestimmten Wert zu steuern.
+Da beide Aufgaben das Arbeiten mit Zeitreihen beinhalten, sind beide neuronalen Netze als rekurrente Netzwerke ausgelegt. Der Simulator sagt aus den aktuellen Parametern und Steuerungssignalen sowie seinem internen Speicher (auch "state" genannt) die Parameter im nächsten Zeitpunkt voraus und darf seinen Speicher beschreiben.
+Ganz ähnlich funkioniert der Autopilot: Er bestimmt aus den aktuellen Parametern und Steuerungssignalen die Steuerungssignale zum nächsten Zeitpunkt.
+Im Training des Simulators wird der Simulator mithilfe der RNN-Klasse von Tensorflow nach und nach auf alle Zeitpunkte einer Zeitreihe aufgerufen. Dabei wird der interne Speicher von einem Zeitpunkt zum nächsten weitergegeben.So haben Daten aus mehreren Zeitpunkten Einfluss auf das Ergebnis.
+Am Ende wird nur die Ähnlichkeit des letzten Aufrufs des Simulators mit den tatsächlichen nächsten Parameterwerten von der Fehlerfunktion bewertet.
+
+Das Training des Autopilots basiert auf einem weitern Netzwerk. Dieses hat als Eingabe die Ausgangssituation und als Ausgabe (Eine Zeitreihe von Parameter- und Steuerungswerten) und als Ausgabe das Verhalten des Flugzeugs in den nächsten Zeitschritten. Dafür benutzt es den Autopiloten und den Simulator.
+Dabei sind die Parameter des Autopiloten im Gegensatz zu denen des Simulators trainierbar (dieser ist vortrainiert). Der Fehler des Netzwerk wird dann aus der Abweichung dieser Vorausgesagten Parameter von vorbestimmten Zielwerten (Horizontalflug, keine Schräglage...) berechnet.
+So wird der Autopilot darauf trainiert, diese Zielwerte zu erreichen.
+Nun stellt sich natürlich die Frage, was man mit einem Autopiloten anfangen soll, der nur horizontal in eine Richtung fliegen kann. Unser Verfahren, dem Autopiloten Steuereingaben zu machen, ist, dem Autopiloten keine absoluten Daten, sondern Daten relativ zum Zielwert zu übergeben.
+Beispielsweise wird die Höhe immer auf 0m gesteuert. Wenn sich das Flugzeug dann 20m unter der Zielhöhe befindet, wird dem Autopiloten eine Höhe von -20m gemeldet. So lässt sich das Training sehr vereinfachen.
+Es spricht aber nichts dagegen, dem Autopiloten in einer späteren Version auch eine Zielgeschwindigkeit zu übergeben.
+
 
 
 Euer Ergebnis
