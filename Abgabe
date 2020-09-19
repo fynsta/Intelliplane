@@ -1,0 +1,74 @@
+https://bw-ki.de/app/submit-project
+
+Teamname
+Intelliplane
+Alle Mitglieder des Teams mit ihrem vollen Namen und Benutzernamen
+Ole Petersen (olep), Moritz Barth (morix42), Simon Hock (Eddie), Fynn Starke (fynsta)
+Titel des Projekts
+Intelliplane
+
+
+Praktische Relevanz und Innovationskraft
+
+Was ist das Ziel des Projekts?
+Das Ziel des Projektes ist es einen Autopiloten für ein Modellflugzeug, bzw. speziell einen Nurflügler (%%Technische Details??)
+ zu erstellen, sodass dieser sich selbst in der Luft hält und am Besten einen gesetzten Zielpunkt erreichen kann.
+
+Warum ist euer Projekt wichtig?
+Autopiloten übernehmen bei Flugzeugen, Schiffen und Autos zunehmend wichtige undtragende Rollen und sind nicht mehr weg zu
+ denken. Wie auch bei unserem Modell werden bei einem richtigen Flugzeug anhand der eingehenden Messdaten Kurskorrekturen
+vorgenommen.
+
+Wer kann euere Ergebnisse verwenden? Was ist der Anwendungsfall?
+Da das Projekt auf Modellflugzeuge ausgelegt ist, ist die Anwendung begrenzt. Denkbar ist jedoch zum Beispiel ein
+"Rückholassistenz", welcher ein Modellflugzeug zum Piloten (%%?) zurück fliegt, wenn die Verbindung abreißt, und
+dann sicher kreisen lässt.
+
+Eingesetzte Methoden
+
+Beschreibung eures Datensatzes (Herkunft, Größe, Klassen...)
+Wir haben bei Testflügen mit dem Modellflugzeug alle in regelmäßigen Abständen verschiedene Daten abgegriffen (%%welche musst du wohl schreiben Ole. Ich lass mal frei...)
+
+Aufbereitung der Daten und sonstige Vorbereitungen
+(%%das auch...)#
+
+Beschreibung eurer Methoden (Aufbau neuronales Netz, machine learning model, Trainieren und Testen der Daten...)
+Da wir den Autopiloten nicht in Echtzeit auf dem Flugzeug testen können, mussten wir zwei neuronale Netze entwickeln: Bei dem einen handelt
+es sich um einen Flugsimulator, welcher aus vorangegangenen Mess- und Steuerdaten die nächsten Daten vorhersagt. Mit Hilfe dieses Netzes
+kann dann der eigentiche Autopilot trainiert werden. Bei beiden netzen handelt es sich um rekurrente neurale Netze. Ein neuronales Netzwerk
+in einer "cell" ermittelt aus jeweils einem Datenpunkt und einem "state" ein Ouput und einen weiteren state. Dahinter wird dann die nächste
+Zelle geschaltet, welche den alten State als Input annimmt. Mit dem abstrakten state haben Daten über mehrere Zellen hinaus Einfluss auf das Ergebnis.
+
+
+Euer Ergebnis
+
+Wie habt ihr euer Projekt ausgewertet? Welche Genauigkeit habt ihr auf Trainingsdaten und auf Testdaten erreicht?
+Mit dem Ziel, dass das Flugzeug einfach eine Höhe hält, wurden gute Ergebnisse im Simulator erzielt. Ein Test am wirklichen Modellflugzeug hat unseren Aufwand überschritten.
+Andere Ziele (einen Punkt im Raum ansteuern, Warteschleifen fliegen, o.ä.) lassen sich durch eine Veränderung der Fehlerfunktion relativ leicht implementieren.
+
+Was habt ihr entwickelt?
+Zusammengefasst haben wir einen Flugsimulator entwickelt, der das Verhalten eines Flugzeugen bei Steuerinputs aufgrund der vorherigen Daten vorher sagt, und einen
+Autopiloten, welcher mit einem Ziel (Flugzeug gerade halen, Punkt ansteuern) Steuerbefehle so gibt, dass dieses erreicht wird.
+
+Was benötigt man, um euer Ergebnis nutzen zu können? (Handy, GitHub, Internet, Rasberry Pi...)
+Grundsätzlich braucht man ein Flugzeug, welches unserem in der Art seiner Sensorik und Elektronik ähnelt, wahrscheinlich sind geringe Modifikationen des Quellcodes von
+Nöten. Fernen muss das Flugzeug mit einem Arduino o.ä. bestückt sein, welcher von einem Laptop Daten empfangen und bearbeiten kann. Unser Projekt ist vollständig auf
+GitHub zu finden.
+
+Anleitung für den Nutzer
+(%%das wird was...)
+
+
+Kritische Reflexion des eigenen Projekts
+
+Auf welche Probleme seid ihr gestoßen?
+Schwierig zu erreichen war, dass das Netz auch nur halbwegs brauchbare Outputs gab. Vor dem rekurrenten Netz haben wir andere (%%Ole!!) Netze ausprobiert und mit verschiedenen
+Schichtanzahlen und Vermaschungen experimentiert.
+
+Was ist das größte Potential eures Projekts?
+Möchte nicht jeder auf einem Nurflügler in den Sonnenuntergang fliegen ohne dauernd die Hände am Steuer zu haben? Dies könnte der erste Schritt in diese Richtung sein!(%%denkt euch was aus, kp)
+ 
+Was ist die größte Schwachstelle eures Projekts?
+
+Wie würdet ihr euer Projekt vorantreiben, wenn ihr unendlich viele Ressourcen und Zeit hättet?
+Das Ziel, dass der Autopilot direkt ein Flugzeug steuert haben wir nicht erreichen können, es wäre aber die Krönung des Ganzen!
