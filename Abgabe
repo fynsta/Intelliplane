@@ -85,17 +85,22 @@ Benutzen Sie alternativ unsere Datei.
 Das Training wird durch das Ausführen von ./simulator/main.py gestartet. Ein Großteil der Trainingseinstellungen können in der Datei ./simulator/helper/tools/constants.py angepasst werden,
 darunter ob ein vortrainiertes Modell geladen werden soll, welches Modell benutzt werden soll und die Länge Zeitreihen, die vorausgesagt werden sollen.
 3. Test des Simulators
-Warten Sie ab, bis der Simulator fertig trainiert bzw. geladen wurde. Das Programm springt dann automatisch in den Testmodus. 
+Warten Sie ab, bis der Simulator fertig trainiert bzw. geladen wurde. Das Programm springt dann automatisch in den Testmodus. Das läuft so ab, dass alle verwendeten Parameter zum aktuellen Zeitpunkt ausgegeben werden. Dann können drei Steuerinputs (jedes in einer Zeile, erst Gas, dann Höhenruder, dann Querruder) eingegeben.
+Das Netzwerk sagt dann die nächsten Daten voraus und so weiter.
 Kritische Reflexion des eigenen Projekts
 
 Auf welche Probleme seid ihr gestoßen?
-Schwierig zu erreichen war, dass das Netz auch nur halbwegs brauchbare Outputs gab. Vor dem rekurrenten Netz haben wir andere (%%Ole!!) Netze ausprobiert und mit verschiedenen
-Schichtanzahlen und Vermaschungen experimentiert.
+Es stellt sich als schwieriger als vermutet heraus, dass der Simulator in seinem Training eine ordentliche Lösung findet. Die Erfahrung zeigt, dass die Ausgaben ab einem Fehlerwert von maximal 4e-4 sinnvoll wirken. Das gelingt nur bei einer ausgetüftelten Einstellung der Parameter und seltsamer Weise auch nur bei flight0.txt als Trainingsdatenset.
+Auch das Einbinden von weiteren Parametern wie der Geschwindigkeit sorgt für Probleme. Das könnte daran liegen, dass diese durch GPS nur alle zwei Sekunden aufgenommen wird.
+Dadurch konnte der Autopilot auch nicht mit allen relevanten Parametern getestet werden.
 
 Was ist das größte Potential eures Projekts?
-Möchte nicht jeder auf einem Nurflügler in den Sonnenuntergang fliegen ohne dauernd die Hände am Steuer zu haben? Dies könnte der erste Schritt in diese Richtung sein!(%%denkt euch was aus, kp)
- 
+Diverse Luftfahrtzeuge lassen sich sehr präzise und ohne Einstellungsarbeit steuern.
+
 Was ist die größte Schwachstelle eures Projekts?
+Die Qualität des Autopiloten lässt sich letztendlich nur im Flug testen, da der Simulator nicht vollständig der Realität entspricht.
 
 Wie würdet ihr euer Projekt vorantreiben, wenn ihr unendlich viele Ressourcen und Zeit hättet?
-Das Ziel, dass der Autopilot direkt ein Flugzeug steuert haben wir nicht erreichen können, es wäre aber die Krönung des Ganzen!
+Die Sensorik des Modellflugzeugs würde zunächst deutlich verbessert, insbesondere durch einen Staudruck-Geschwindigkeitssensor. In Kombination mit ausgetüftelteren neuronalen Netzwerken würde der Simulator deutlich realistischer mit allen relevanten Parametern.
+Auch der Autopilot könnte noch deutlich ausgetüftelt werden. Als Zielvorgaben sind Geschwindigkeit und Heading noch sinnvoll.
+Die Krönung wäre letztendlich noch, die Software in einem Feldversuch zu testen. Dazu müsste noch ein Steuerungs-UI in die Telemetriesoftware eingebaut werden.
