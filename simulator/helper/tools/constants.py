@@ -9,3 +9,5 @@ STEP = 0.1
 
 MODEL = "rnnSimV2"
 LOADBACKUP = True
+
+TRAINING_DATA=["flight0.txt", "flight3.txt"]

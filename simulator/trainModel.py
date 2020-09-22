@@ -1,4 +1,5 @@
 from curses.ascii import SI
+from helper.tools.constants import TRAINING_DATA
 import importlib
 import tensorflow as tf
 from pathlib import Path
@@ -7,11 +8,10 @@ import numpy as np
 
 from helper.tools import constants, readLog, getSamples
 base_path = Path(__file__).parent
-file_path = (base_path / "../dataCollection/logs/flight").resolve()
 
-dataSet = readLog.FlightDataSet(str(file_path)+'0.txt',2)
-#for i in range(3,4):
-    #dataSet+=readLog.FlightDataSet(str(file_path)+str(i)+'.txt')
+dataSet = readLog.FlightDataSet(str((base_path / ("../dataCollection/logs/"+constants.TRAINING_DATA[0])).resolve()),2)
+for i in range(1,len(constants.TRAINING_DATA)):
+    dataSet+=readLog.FlightDataSet(str((base_path / ("../dataCollection/logs/"+constants.TRAINING_DATA[i])).resolve()),2)
 
 usedModel = importlib.import_module("helper.models."+constants.MODEL)
 

@@ -76,9 +76,16 @@ Dann kann der Autopilot entweder virtuell mithilfe des Simulators ausprobiert we
 Unser Projekt ist vollständig auf GitHub zu finden.
 
 Anleitung für den Nutzer
-(%%das wird was...)
-
-
+0. Herunterladen des Quellcodes von GitHub
+1. Aufnahme von Trainingsdaten
+Bauen Sie das notwendige Telemetriesystem in Ihr Modellflugzeug ein und laden Sie den Code aus dem GitHub-Repository mithilfe der VSCode-Extension PlatformIO hoch.
+Starten Sie "server.js" mittels Node auf Ihrem Laptop und öffnen Sie "localhost:8082/home.html" im Webbrowser. Stecken Sie Ihr Empfangsgerät an einen USB-Port Ihres Laptops und wählen Sie das passende USB-Gerät auf der Website aus. Starten Sie das Modellflugzeug und laden Sie nach dem Flug den Log von der Website herunter.
+Benutzen Sie alternativ unsere Datei.
+2. Training des Simulators
+Das Training wird durch das Ausführen von ./simulator/main.py gestartet. Ein Großteil der Trainingseinstellungen können in der Datei ./simulator/helper/tools/constants.py angepasst werden,
+darunter ob ein vortrainiertes Modell geladen werden soll, welches Modell benutzt werden soll und die Länge Zeitreihen, die vorausgesagt werden sollen.
+3. Test des Simulators
+Warten Sie ab, bis der Simulator fertig trainiert bzw. geladen wurde. Das Programm springt dann automatisch in den Testmodus. 
 Kritische Reflexion des eigenen Projekts
 
 Auf welche Probleme seid ihr gestoßen?
