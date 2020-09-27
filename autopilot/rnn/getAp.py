@@ -19,6 +19,23 @@ from helper.tools.modelToRnnCell import ModelRnn
 from helper.tools.constants import PREDICTABLE_PARAM_COUNT,CONTROLLABLE_PARAM_COUNT
 
 def getAp(CONTROLLABLE_PARAMETER_COUNT=CONTROLLABLE_PARAM_COUNT, PREDICTABLE_PARAM_COUNT=PREDICTABLE_PARAM_COUNT):
+    """
+    get the autopilot network.
+
+    t0 t1 t2 t3 t4 t5
+    |  |  |  |  |  |
+    v  v  v  v  v  v
+    L->L->L->L->L->L
+    |  |  |  |  |  |
+    v  v  v  v  v  v
+    F  F  F  F  F  F
+    |  |  |  |  |  |
+    v  v  v  v  v  v
+    t1 t2 t3 t4 t5 t6
+
+    L=^LSTM cell
+    F=^ deep fully connected network
+    """
     LSTM_STATE_SIZE = 15
 
     def getOutputProcessor():
