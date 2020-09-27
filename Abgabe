@@ -12,7 +12,7 @@ Praktische Relevanz und Innovationskraft
 
 Was ist das Ziel des Projekts?
 Das Ziel des Projektes ist es einen selbst lernenden Autopiloten für ein Modellflugzeug
- zu erstellen, der für Verkehrsflugzeuge übliche Ziele erreicht.
+ zu erstellen, der für Verkehrsflugzeuge übliche Ziele wie das Halten der Höhe oder eines Kurses erreicht.
 
 Warum ist euer Projekt wichtig?
 Autopiloten übernehmen bei Flugzeugen, Schiffen und Autos zunehmend wichtige undtragende Rollen und sind nicht mehr weg zu
@@ -73,7 +73,7 @@ Autopiloten, welcher mit einem Ziel (Flugzeug auf eine Höhe steuern, gerade hal
 Was benötigt man, um euer Ergebnis nutzen zu können? (Handy, GitHub, Internet, Rasberry Pi...)
 Grundsätzlich braucht man ein Flugzeug, welches die benötigten Trainingsdaten für den Simulator aufnehmen kann. Am Computer wird dann mit den Trainingsdaten der Simulator und mit dem Simulator der Autopilot trainiert.
 Dann kann der Autopilot entweder virtuell mithilfe des Simulators ausprobiert werden oder in einer späteren Version auf ein TensorFlow Lite-fähiges Gerät wie einen Arduino hochgeladen werden. Die Steuerbefehle werden dann per Funk übertragen.
-Unser Projekt ist vollständig auf GitHub zu finden.
+Unser Projekt ist vollständig auf GitHub zu finden (https://github.com/fynsta/Intelliplane).
 
 Anleitung für den Nutzer
 0. Herunterladen des Quellcodes von GitHub
@@ -98,9 +98,13 @@ Was ist das größte Potential eures Projekts?
 Diverse Luftfahrtzeuge lassen sich sehr präzise und ohne Einstellungsarbeit steuern.
 
 Was ist die größte Schwachstelle eures Projekts?
+Unsere Zielsetzung war sehr optimistisch. Uns ist allerdings schnell klar geworden, dass wir nicht alle unsere Ziele erreichen konnten.
 Die Qualität des Autopiloten lässt sich letztendlich nur im Flug testen, da der Simulator nicht vollständig der Realität entspricht.
 
 Wie würdet ihr euer Projekt vorantreiben, wenn ihr unendlich viele Ressourcen und Zeit hättet?
+Auf dem langen Weg, einen echten Autopiloten zum Fliegen zu bringen, haben wir leider nicht ganz das Ende in der uns zur Verfügung stehenden Zeit erreichen können.
 Die Sensorik des Modellflugzeugs würde zunächst deutlich verbessert, insbesondere durch einen Staudruck-Geschwindigkeitssensor. In Kombination mit ausgetüftelteren neuronalen Netzwerken würde der Simulator deutlich realistischer mit allen relevanten Parametern.
 Auch der Autopilot könnte noch deutlich ausgetüftelt werden. Als Zielvorgaben sind Geschwindigkeit und Heading noch sinnvoll.
 Die Krönung wäre letztendlich noch, die Software in einem Feldversuch zu testen. Dazu müsste noch ein Steuerungs-UI in die Telemetriesoftware eingebaut werden.
+Wäre dieses Ziel erreicht, sind die Möglichkeiten grenzenlos: Automatische Objekterkennung und -vermeidung, bestimmte Kunststückchen und Manöver oder verschiedene Level
+der KI-Assistenz.
