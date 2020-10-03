@@ -76,9 +76,11 @@ if False:
     trainer.save_weights('./checkpoint/trainer')
 else:
     trainer.load_weights('./checkpoint/trainer')
-results=trainer.predict(startingPoints)
-print(results)
+#results=trainer.predict(startingPoints)
+#print(results)
 
+
+#show autopilot behavior in example situation
 input=startingPoints[120:121] # take starting situation from training data
 apLayer: layers.RNN = ap.layers[0] #predict next situation like in apTrainer
 apOutput = apLayer(input)
@@ -101,10 +103,8 @@ graphs=[]
 for i in range(len(pltValues)):
     graphs.append(plt.plot(time,pltValues[i],label=LABELS[i]))
 plt.legend()
-#plt.draw()
-#plt.show()
 for _ in range(70):
-    # let autopilot control the situation forever
+    # let autopilot control the situation
     print(simParams.numpy(),'|',apParams.numpy())
     nextInput = unifyParameters(simParams, apParams)
     nextInput=tf.expand_dims(nextInput,axis=1)

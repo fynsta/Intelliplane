@@ -1,6 +1,14 @@
 # Intelliplane
 AI powered autopilot 
 
+## usage
+### simulator
+execute ./simulator/main.py
+parameters can be configured in ./simulator/helper/tools/constants.py
+
+### autopilot
+execute -/autopilot/rnn/main.py
+
 ## Important Git stuff
 
 ### To get master

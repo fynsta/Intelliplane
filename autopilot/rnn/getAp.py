@@ -25,16 +25,22 @@ def getAp(CONTROLLABLE_PARAMETER_COUNT=CONTROLLABLE_PARAM_COUNT, PREDICTABLE_PAR
     t0 t1 t2 t3 t4 t5
     |  |  |  |  |  |
     v  v  v  v  v  v
-    L->L->L->L->L->L
-    |  |  |  |  |  |
-    v  v  v  v  v  v
-    F  F  F  F  F  F
-    |  |  |  |  |  |
-    v  v  v  v  v  v
-    t1 t2 t3 t4 t5 t6
+    L->L->L->L->L->L-----
+    |  |  |  |  |  |    |
+    v  v  v  v  v  v    |
+    F  F  F  F  F  F    |
+    |  |  |  |  |  |    |
+    v  v  v  v  v  v    |
+    c1 c2 c3 c4 c5 c6   |
+                   |    |
+                   v    |
+                output <-
 
     L=^LSTM cell
-    F=^ deep fully connected network
+    F=^ deep fully connected network ("output processor")
+    ti=^ parameter values at timestep i
+    ci=^ conrol outputs at timestep i
+    Note that the link from the last state to the output is optional and must be enabled by setting "return_state" to true
     """
     LSTM_STATE_SIZE = 15
 
