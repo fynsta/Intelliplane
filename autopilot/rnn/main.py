@@ -79,7 +79,7 @@ else:
 results=trainer.predict(startingPoints)
 print(results)
 
-input=startingPoints[109:110] # take starting situation from training data
+input=startingPoints[120:121] # take starting situation from training data
 apLayer: layers.RNN = ap.layers[0] #predict next situation like in apTrainer
 apOutput = apLayer(input)
 apParams = apOutput[0]
@@ -129,4 +129,4 @@ for _ in range(70):
 plt.xlabel("time[s]")
 plt.xlim(0,9)
 plt.show()
-plt.savefig("diagram.png")
+plt.savefig("autopilot_behavior.pdf")
