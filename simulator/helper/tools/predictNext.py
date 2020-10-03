@@ -36,7 +36,6 @@ def predictFromInputNewDataStructure(SIZE, simulatorModel: tf.keras.Model):
         graphs.append(plt.plot(time,pltValues[i],label=LABELS[i]))
     plt.legend()
     plt.draw()
-    counter=0
     while True:
         res = simulatorModel.predict(np.array([history]))
         next = res.tolist()[0]

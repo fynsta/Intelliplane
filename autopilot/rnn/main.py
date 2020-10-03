@@ -89,15 +89,44 @@ simOutput = simLayer(input)
 simParams = simOutput[0]
 simState = simOutput[1:]
 
+from time import sleep
 
-while True:
-        # let autopilot control the situation forever
-        print(simParams.numpy(),'|',apParams.numpy())
-        nextInput = unifyParameters(simParams, apParams)
-        nextInput=tf.expand_dims(nextInput,axis=1)
-        apOutput = apLayer(nextInput, initial_state=apState)
-        apParams = apOutput[0]
-        apState = apOutput[1:]
-        simOutput = simLayer(nextInput, initial_state=simState)
-        simParams = simOutput[0]
-        simState = simOutput[1:]
+import matplotlib.pyplot as plt
+#initialize plotting tool
+LABELS=["pitch","bank","throttle","elevator","aileron"]
+#plt.ion()
+time=[0.1*i for i in range(25)]
+pltValues=list(zip(*list(input[0])))
+graphs=[]
+for i in range(len(pltValues)):
+    graphs.append(plt.plot(time,pltValues[i],label=LABELS[i]))
+plt.legend()
+#plt.draw()
+#plt.show()
+for _ in range(70):
+    # let autopilot control the situation forever
+    print(simParams.numpy(),'|',apParams.numpy())
+    nextInput = unifyParameters(simParams, apParams)
+    nextInput=tf.expand_dims(nextInput,axis=1)
+    apOutput = apLayer(nextInput, initial_state=apState)
+    apParams = apOutput[0]
+    apState = apOutput[1:]
+    simOutput = simLayer(nextInput, initial_state=simState)
+    simParams = simOutput[0]
+    simState = simOutput[1:]
+
+
+    nextVal=list(simParams.numpy()[0])+list(apParams.numpy()[0])
+    for i in range(len(pltValues)):
+        pltValues[i]+=(nextVal[i],)
+    time.append(time[-1]+0.1)
+    i=0
+    for graph in graphs:
+        graph[0].set_xdata(time)
+        graph[0].set_ydata(pltValues[i])
+        i+=1
+    #plt.show()
+plt.xlabel("time[s]")
+plt.xlim(0,9)
+plt.show()
+plt.savefig("diagram.png")
