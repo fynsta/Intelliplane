@@ -1,8 +1,12 @@
-from helper.tools import readLog, constants, predictNext
+#this is the init point for training the autopilot
+
+from helper.tools import constants, predictNext
 import trainModel
 
 
-SIZE = constants.INPUT_TIME_SERIES_LENGTH
 
+#load trained model
 model = trainModel.train(constants.LOADBACKUP)
-predictNext.predictFromInputNewDataStructure(SIZE, model)
+
+#start interactive simulator
+predictNext.predictFromInputNewDataStructure(constants.INPUT_TIME_SERIES_LENGTH, model)

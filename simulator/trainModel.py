@@ -6,20 +6,24 @@ from pathlib import Path
 import numpy as np
 
 
+#get dataset when module is loaded
 from helper.tools import constants, readLog, getSamples
 base_path = Path(__file__).parent
 
-dataSet = readLog.FlightDataSet(str((base_path / ("../dataCollection/logs/"+constants.TRAINING_DATA[0])).resolve()),2)
+dataSet = readLog.FlightDataSet(str((base_path / ("../dataCollection/logs/"+constants.TRAINING_DATA[0])).resolve()),2) #get dataset from first flight path
 for i in range(1,len(constants.TRAINING_DATA)):
-    dataSet+=readLog.FlightDataSet(str((base_path / ("../dataCollection/logs/"+constants.TRAINING_DATA[i])).resolve()),2)
+    dataSet+=readLog.FlightDataSet(str((base_path / ("../dataCollection/logs/"+constants.TRAINING_DATA[i])).resolve()),2) #merge additional flights into dataset
 
-usedModel = importlib.import_module("helper.models."+constants.MODEL)
-
-SIZE = constants.INPUT_TIME_SERIES_LENGTH
-STEP = constants.STEP
+usedModel = importlib.import_module("helper.models."+constants.MODEL) #load neural network
 
 
-def train(loadBackup: bool):
+
+def train(loadBackup: bool=False):
+    """
+    get trained simulator model. If specified load pretrained weights
+    """
+
+    #load neural network and the type of datastructure it uses
     model, USE_NEW_DATA_STRUCTURE = usedModel.getModel(
         constants.INPUT_TIME_SERIES_LENGTH, constants.PARAMETER_COUNT, constants.PREDICTABLE_PARAM_COUNT)
 
@@ -33,8 +37,10 @@ def train(loadBackup: bool):
     if loadBackup:
         model.load_weights('./checkpoint/'+constants.MODEL+'/sim')
     else:
+        #get tensorflow dataset and train model
         if USE_NEW_DATA_STRUCTURE:
-            inputs, outputs = getSamples.load(STEP, SIZE, dataSet, 'full')
+            #get raining examples from flight log dataset
+            inputs, outputs = getSamples.load(constants.STEP, constants.INPUT_TIME_SERIES_LENGTH, dataSet, 'full')
             inputs, outputs = np.array(inputs), np.array(outputs)
             model.fit(
                 x=inputs,
@@ -43,7 +49,8 @@ def train(loadBackup: bool):
                 epochs=2500
             )
         else:
-            xdata, ydata, labels = getSamples.load(STEP, SIZE, dataSet)
+            #get raining examples from flight log dataset
+            xdata, ydata, labels = getSamples.load(constants.STEP, constants.INPUT_TIME_SERIES_LENGTH, dataSet)
             xdata = np.array(xdata)
             ydata = np.array(ydata)
             labels = np.array(labels)
