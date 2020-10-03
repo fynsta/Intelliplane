@@ -109,12 +109,15 @@ class FlightDataSet:
                     pass
                 if f != 0:
                     self.data.append(f)
+        
+        #remove frames with at the beginning with too little speed (because flight has not yet started)
         while True:
             frame = self.data[0]
             if isinstance(frame, BasicFrame) and frame.s > speedCut:
                 break
             else:
                 self.data.pop(0)
+        # remove frames at the end with too little speed
         while True:
             frame = self.data[-1]
             if isinstance(frame, BasicFrame) and frame.s > speedCut:
@@ -124,6 +127,7 @@ class FlightDataSet:
         self.startTime = self.data[0].time
         self.length = self.data[-1].time-self.startTime
 
+        # try to fix issues with speed values. Since it still comes from gps it is updated every 2 seconds only but sent much more often. Therefore a linear interpolation is applied to prevent jumps.
         basicFrames = list(
             filter(lambda frame: isinstance(frame, BasicFrame), self.data))
         newSpeedValues = []

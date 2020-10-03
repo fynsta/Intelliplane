@@ -1,5 +1,3 @@
-from curses.ascii import SI
-from helper.tools.constants import TRAINING_DATA
 import importlib
 import tensorflow as tf
 from pathlib import Path
