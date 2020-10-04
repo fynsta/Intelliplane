@@ -14,7 +14,7 @@ def getModel(INPUT_TIME_SERIES_LENGTH: int, PARAMETER_COUNT: int, PREDICTABLE_PA
     lstmCell = LSTMCell(20)
     unifiedCell = layers.StackedRNNCells([inputCell, lstmCell])
     rnnLayer = layers.RNN(unifiedCell)
-    rnnOutput=rnnLayer(input)
+    rnnOutput = rnnLayer(input)
     dense1 = layers.Dense(15, 'relu')(rnnOutput)
     dense2 = layers.Dense(10, 'relu')(dense1)
     output = layers.Dense(PARAMETER_COUNT, 'relu')(dense2)

@@ -13,5 +13,5 @@ const fs=tf.grad(f);
 const result=fs(indices);
 array = result.arraySync();
 class MyCell extends tf.layers.RNNCell {
-
+    
 }

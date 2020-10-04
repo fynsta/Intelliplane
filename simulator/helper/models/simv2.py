@@ -14,7 +14,10 @@ def singChanPr():
     return tf.keras.Model(input, dense2)
 
 
-def getSimulatorModel():
+def getModel():
+    """
+    attempt to use more parameters in old datastructure. Depreciated.
+    """
     thrHist = layers.Input(shape=(HISTORY_LENGTH,), name='thrHistory')
     elvHist = layers.Input(shape=(HISTORY_LENGTH,), name='elvHistory')
     ailHist = layers.Input(shape=(HISTORY_LENGTH,), name='ailHistory')
@@ -29,13 +32,14 @@ def getSimulatorModel():
     y = layers.Dense(10, activation='tanh')(y)
     y = layers.Dense(5, activation='tanh')(y)
     y = layers.Dense(4)(y)
-    return tf.keras.Model([thrHist, elvHist, ailHist, pchHist, altHist, velHist, bnkHist], y)
+    return tf.keras.Model([thrHist, elvHist, ailHist, pchHist, altHist, velHist, bnkHist], y), False
 
+quit()
 
-model = getSimulatorModel()
+model = getModel()
 model.summary()
 
-import tools.readLog as tools
+import ..tools.readLog as tools
 base_path = Path(__file__).parent
 file_path = (base_path / "../dataCollection/logs/flight2.txt").resolve()
 # time, sets = t.readLog(file_path)

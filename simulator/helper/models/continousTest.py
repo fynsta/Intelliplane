@@ -50,6 +50,9 @@ class InputSelectorCell(layers.AbstractRNNCell):
 
 
 def getModel():
+    """
+    early stage attempt to use a linear interpolation in network, far from working
+    """
     y_ref = [[[1, 1], [2, 4], [3, 9], [4, 16]],
              [[1, 1], [2, 4], [3, 9], [4, 16]]]
 
@@ -66,5 +69,5 @@ def getModel():
     return tf.keras.Model(input, output)
 
 
-model = getModel()
-model.summary()
+#model = getModel()
+#model.summary()
