@@ -21,7 +21,7 @@ def getModel(INPUT_TIME_SERIES_LENGTH=20, PARAMETER_COUNT=2, PREDICTABLE_PARAM_C
                 output <-
 
     L=^LSTM cell
-    F=^ deep fully connected network ("output processor")
+    F=^ deep fully connected network ("output processor"). It needs to be wrapped into an RNN cell to work with the LSTM cell
     ti=^ parameters at time i
     Note that the link from the last state to the output is optional and must be enabled by setting "return_state" to true
     """
