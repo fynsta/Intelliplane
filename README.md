@@ -43,13 +43,13 @@ Der relevante, benutzte Autopilot liegt in autopilot/rnn. Er wird mit main.py ge
 Das Trainingsnetzwerk für den Autopiloten (der "apTrainer") bestimmt mit AUtopilot und Simulator das Verhalten des FLugzeugs aus einer AUsgangssituation heraus. Dazu initialisert er zunächst die states von Simulator und Autopilot mithilfe der Startsituation. Simulator und Autopilot bestimmen dann aus ihrem Speicher und dem letzten Datensatz ihren Teil des Datensatzes einen Zeitpunkt später. Dieser wird dann wieder zurüchgeführt, sodass die nächsten paar (20) Flugzustände bei Steuerung durch den Autopiloten vorausgesagt werden.
 Diese Voraussage wird dann durch eine Fehlerfunktion bewertet, sodass der Autopilot auf eine sinnvolle Steuerung hin trainiert werden kann.
 
-### Ergebnis
-Wenn nur Anstellwinkel und Schräglage betrachtet werden, lässt sich das Ergebnis durchaus sehen: Der Simulator reagiert plausibel auf Steuerausschläge mit Höhen- und Querruder.  Auch der Autopilot steuert die beiden Größen aus beliebigen Ausgangssituationen präzise auf null (siehe autopilot_behavior.pdf . Nach den ersten 2.5s übernimmt der Autopilot das Steuer. Er stabilisiert das Flugzeug schnell und präzise, pitch und bank werden auf null gesteuert).
+## Ergebnis
+Wenn nur Anstellwinkel und Schräglage betrachtet werden, lässt sich das Ergebnis durchaus sehen: Der Simulator reagiert plausibel auf Steuerausschläge mit Höhen- und Querruder.  Auch der Autopilot steuert die beiden Größen aus beliebigen Ausgangssituationen präzise auf null (siehe autopilot_behavior.pdf) . Nach den ersten 2.5s übernimmt der Autopilot das Steuer. Er stabilisiert das Flugzeug schnell und präzise, pitch und bank werden auf null gesteuert).
 
-### Ausblick
+## Ausblick
 Bei Hinzunahme von Geschwindigkeit und Höhe findet das Netzwerk beim Training leider noch keine sinnvolle Lösung, der Simulator reagiert nicht richtig auf Höhenruder- und Querruderinputs. Der entsprechende ist im folgenden branch verfügbar: https://github.com/fynsta/Intelliplane/tree/Ole
 Unser Ansatz ist hier, den Simulator Höhendifferenzen voraussagen zu lassen, dem Autopiloten aber die absolute Höhe zu übergeben. So muss lediglich der "apTrainer" signifikant angepasst werden. Mit etwas fine-tuning kann hierfür aber sicherlich auch ein zufriedenstellendes Ergebnis erzielt werden. Analog kann das Steuern auf einen bestimmten Kurs implementiert werden. Allerdings halten wir es für möglich, dass hierfür noch sauberere Messdaten notwendig sind.
 Ein Ansatz, um den Simulator noch realistischer zu machen, ist nicht mehr mit absoluten Werten, sondern mit Wahrscheinlichkeitsverteilungen zu arbeiten. Der Simulator sagt dann aus einer Wahrscheinlichkeitsverteilung von Ausgangssituationen eine Wahrscheinlichkeitsverteilung von nächsten Flugzuständen voraus bei (festen) Steuerinputs. Der Autopilot bestimmt aus einer Wahrscheinlichkeitsverteilung von FLugzeuständen Steuerinputs. Die Wahrscheinlichkeitsverteilungen werden dabei parametrisiert (z.B. als Normalverteilung) und die Parameter übergeben. So lässt sich potenziell modellieren, dass z.B. durch Böen der Effekt von Steuerinputs nicht im Voraus klar ist. Sonst ist ein mögliches Problem, dass der SImulator ein "Durchschnittsverhalten" simuliert, das stabiler als in der Realität ist.
 
-### Video
+## Video
 https://youtu.be/X3z1Nj0Oe-Q
