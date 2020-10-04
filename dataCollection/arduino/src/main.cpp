@@ -5,8 +5,8 @@
 #define NEO6M
 //#define SPMSAT
 #define SERVO_CONTROL
-#define PPMRX
-//#define LED
+//#define PPMRX
+#define LED
 
 #ifdef HC12Module
 #include "sendData.h"
@@ -46,6 +46,31 @@ SPMSatRx rx(PA12, &Serial2, 6, DSM2_22, DSM2);
 #include "PPMRx.h"
 PPMRx rx(PA12, 6);
 #endif
+
+long nextBlinkTrigger = 0;
+byte blinkStatus = 0;
+void startBlink()
+{
+	analogWrite(PA6, 255);
+	analogWrite(PA7, 255);
+	nextBlinkTrigger = millis() + 20;
+	blinkStatus++;
+}
+void endBlink()
+{
+	analogWrite(PA6, 0);
+	analogWrite(PA7, 0);
+	if (blinkStatus == 1)
+	{
+		nextBlinkTrigger = millis() + 100;
+		blinkStatus++;
+	}
+	else
+	{
+		nextBlinkTrigger = millis() + 1000;
+		blinkStatus = 0;
+	}
+}
 MPU9250DMP dmp;
 void setup()
 {
@@ -84,6 +109,17 @@ void setup()
 
 void loop()
 {
+	if (millis() > nextBlinkTrigger)
+	{
+		if (blinkStatus % 2 == 0)
+		{
+			startBlink();
+		}
+		else
+		{
+			endBlink();
+		}
+	}
 #ifdef bmpSensor
 	readHeight();
 #endif
@@ -91,17 +127,6 @@ void loop()
 #ifdef SPMSAT
 	rx.read();
 #endif
-	if (counter % 100 == -1)
-	{
-		String msg;
-		for (int i = 0; i < rx.numOfChannels; i++)
-		{
-			float val = rx.getChannel(i);
-			//Serial.print("<" + String(i) + ":" + String(val) + ">");
-			msg += "<" + String(i) + ":" + String(val) + ">";
-		}
-		addMessage(msg);
-	}
 	//Serial.println("");
 	//setServoStates(rx);
 	dmp.readGyro();
@@ -163,14 +188,14 @@ void loop()
 		write(speed);
 		writeEnd();
 
-		writeStart();
+		/*writeStart();
 		write<uint8_t>((uint8_t)5); // head 3
 		write<uint8_t>(rx.numOfChannels);
 		for (int i = 0; i < rx.numOfChannels; i++)
 		{
 			write(rx.getChannel(i));
 		}
-		writeEnd();
+		writeEnd();*/
 
 		//readGyro();
 #ifdef NEO6M

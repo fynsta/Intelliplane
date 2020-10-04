@@ -7,7 +7,7 @@
 #include "SoftwareSerial.h"
 SoftwareSerial HC12(11, 10);
 #else
-#define HC12 Serial3
+#define HC12 Serial2
 #endif
 #define maxMessages 10
 

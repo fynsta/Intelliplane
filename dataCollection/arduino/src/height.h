@@ -1,8 +1,8 @@
 #include <Arduino.h>
 //#define BMP085_Sensor
-//#define BME280_Sensor
+#define BME280_Sensor
 //#define BME280_Sensor_Adafruit
-#define BMP280_SENSOR
+//#define BMP280_SENSOR
 void readHeight();
 void beginHeight();
 float height = 0;
@@ -75,7 +75,7 @@ void calibrateHeight()
 }
 void readHeight()
 {
-    height = staticPressure.readAltitude();
+    height = staticPressure.readAltitude(1013.25);
 #ifdef SerialDebugging
     //Serial.println("height: "+String(height));
 #endif

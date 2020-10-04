@@ -19,7 +19,7 @@ public:
     };
     void processHeadingData(float headingArc, float factor = 0.1);
     void updateReadables();
-    n::Quaternion translation = {0.7071, 0, 0, 0.7071};
+    n::Quaternion translation = {0, 0.7071, 0.7071, 0};
     void calibrateOrientation(CalibrationState s);
     // read gyro data and add them to the current rotations to process. Reset last read
     virtual void readGyro() = 0;
@@ -33,7 +33,7 @@ public:
     FloatVector accel;
     // accumulated rotation data
     FloatVector rot;
-    n::Quaternion currentRotation = {0.7071, 0, 0, 0.7071};
+    n::Quaternion currentRotation = {0, 0.7071, 0.7071, 0};
 };
 #ifdef MPU9250_SENSOR
 #include "MPU9250.h"
