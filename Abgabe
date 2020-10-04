@@ -27,12 +27,12 @@ Eingesetzte Methoden
 
 Beschreibung eures Datensatzes (Herkunft, Größe, Klassen...)
 Wir haben bei Testflügen mit dem Modellflugzeug in regelmäßigen Abständen Parameter gemessen, die die Bewegung, Lage und Steuerung desselben im Raum möglichst vollständig beschreiben.
-Dazu gehören Höhe, Position, Geschwindigkeit, Anstellwinkel ("pitch"), Schräglage ("bank"), Flugrichtung ("heading"), Höhen- und Querruderausschlaf sowie das Gas.
+Dazu gehören Höhe, Position, Geschwindigkeit, Anstellwinkel ("pitch"), Schräglage ("bank"), Flugrichtung ("heading"), Höhen- und Querruderausschlag sowie das Gas.
 Dazu wurde ein eigenes Telemetriesystem entwickelt, das auf einen Kreisel, einen Beschleunigungssensor, einen barometrischen Drucksensor sowie einen GPS-Empfänger zurückgreift.
 Aufgenommen wurden damit vier Flüge mit jeweils circa 10 min Flugzeit.
 
 Aufbereitung der Daten und sonstige Vorbereitungen
-(%%das auch...)#
+Die Datenpunkte werden linear interpoliert und abgeschnitten, solange das Flugzeug sich noch am Boden befindet.
 
 Beschreibung eurer Methoden (Aufbau neuronales Netz, machine learning model, Trainieren und Testen der Daten...)
 Da wir den Autopiloten nicht in Echtzeit auf dem Flugzeug testen können, mussten wir zwei neuronale Netze entwickeln: Bei dem einen handelt
