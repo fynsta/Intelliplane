@@ -28,12 +28,12 @@ def getApTrainer():
     input = layers.Input((None, constants.PARAMETER_COUNT))
     apLayer: layers.RNN = ap.layers[0] #get the rnn layer of the autopilot
     apLayer.return_state = True
-    apOutput = apLayer(input) #initialize autopilot parameters with the starting situation
+    apOutput = apLayer(input) #initialize autopilot state with the starting situation
     apParams = apOutput[0] #also use the computed control signals
     apState = apOutput[1:] #save the state
     simLayer: layers.RNN = simulator.layers[0]#get the rnn layer of the simulator
     simLayer.return_state = True
-    simOutput = simLayer(input) #initialize simulator parameters with the starting situation
+    simOutput = simLayer(input) #initialize simulator state with the starting situation
     simParams = simOutput[0] #also use the predicted next situation
     simState = simOutput[1:] # save the simultator state
     outputs=[] # list of next situations

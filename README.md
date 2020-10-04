@@ -9,7 +9,7 @@ parameters can be configured in ./simulator/helper/tools/constants.py
 ### autopilot
 execute -/autopilot/rnn/main.py
 
-## High-Level-Erklärung
+## Erklärung
 Da wir den Autopiloten nicht in Echtzeit auf dem Flugzeug testen können, mussten wir zwei neuronale Netze entwickeln: Bei dem einen handelt
 es sich um einen Flugsimulator, welcher aus vorangegangenen Mess- und Steuerdaten die nächsten Daten vorhersagt. Dieses kann mit herkömmlichen supervised learning trainiert werden.
 Mit Hilfe dieses Netzes kann dann der eigentiche Autopilot trainiert werden. Der Autopilot wird darauf trainiert, aus bestimmten Startsituationen heraus in einigen Zeitschritten einige Parameter wie den Anstellwinkel auf einen bestimmten Wert zu steuern.
@@ -27,3 +27,18 @@ Es spricht aber nichts dagegen, dem Autopiloten in einer späteren Version auch 
 
 Das Autopilottrainingsnetzwerk funktioniert folgendermaßen: Autopilot und Simulator initialisieren ihren internen Speicher durch das Verarbeiten der Startsituation. Dann bestimmen Autopilot und Simulator die nächsten Steuerungssignale, Parameter und Speicherstatus. Nach diesem Prinzip werden die Netzwerke einige Male mit ihren eigenen Ausgaben als Eingaben aufgerufen.
 So steuert der Autopilot die nächsten paar Zeitschritte und wird dafür von der Fehlerfunktion bewertet.
+
+### Datenbeschaffung
+Alles zum Beschaffen der Trainingsdaten befindet sich im Ordner ./dataCollection. Im Unterordner arduino befindet sich der Code, der die Sensordaten im Flugzeug verarbeitet, codiert und sendet.
+in telemetryServer befindet sich das NodeJS-Programm, das die Daten empfängt sowie an die Website im Ordner weiterleitet. Diese visualisiert die Daten und bietet die Möglichkeit, eine Aufzeichnung herunterzuladen. Aus dieser lassen sich Trainingsbeispiele auslesen. Unsere Testflüge befinden sich im Ordner logs.
+### Simulator
+Der Simulator befindet sich im Unterordner simulator. Der Einstiegspunkt ist main.py . trainModel.py biete die Methode, ein fertig traninertes Simulatormodell zu laden.
+helper ist ein Modul, das einige wiederverwendbare Codestücke enthält: In helper.models befinden sich alle getesteten Simulator-Netzwerke, in helper.tools sind Werkzeuge wie eine Datensatzklasse und ein Test-Script für den Simulator. In der Datei helper.tools.constants lassen sich zentral die wichtigsten globalen Einstellungen vornehmen.
+Zu beachten ist, dass nur das Netzwerk rnnSimV2 stabil funktioniert.
+Im Ordner javascript ist ein noch nicht funktionsfähiger Ansatz, von python auf Javascript umzusteigen.
+Die Datenformate (Reihenfolge und Bedeutung der Prameter) sind in helper.tools.readLog.py erklärt.
+### Autopilot
+Der relevante, benutzte Autopilot liegt in autopilot/rnn. Er wird mit main.py gestartet. Das Projekt ist so ausgelegt, dass ein Autopilot- und ein Simulatornetzwerk geladen werden. Beide müssen aus einem einzigen rekurrenten Netz bestehen, damit das Training funktioniert (die rekurrente Zelle darf aber beliebig kompliziert sein).
+
+Das Trainingsnetzwerk für den Autopiloten (der "apTrainer") bestimmt mit AUtopilot und Simulator das Verhalten des FLugzeugs aus einer AUsgangssituation heraus. Dazu initialisert er zunächst die states von Simulator und Autopilot mithilfe der Startsituation. Simulator und Autopilot bestimmen dann aus ihrem Speicher und dem letzten Datensatz ihren Teil des Datensatzes einen Zeitpunkt später. Dieser wird dann wieder zurüchgeführt, sodass die nächsten paar (20) Flugzustände bei Steuerung durch den Autopiloten vorausgesagt werden.
+Diese Voraussage wird dann durch eine Fehlerfunktion bewertet, sodass der Autopilot auf eine sinnvolle Steuerung hin trainiert werden kann.
